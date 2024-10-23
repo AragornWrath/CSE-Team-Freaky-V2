@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect, Http404
 from django.template import loader, RequestContext
-from pymongo import MongoClient
+# from pymongo import MongoClient
 from bcrypt import hashpw, gensalt
 from home.generateToken import generateToken
 import hashlib
@@ -15,6 +15,9 @@ collection = db['users']
 accounts = collection['accounts']
 
 # Create your views here.
+def index_trips(request: HttpRequest):
+    trips = TripItem.objects.all()  # Fetch all task objects
+    return render(request, 'trips.html', {'object_list': trips})
 
 def index(request: HttpRequest):
     context = {
@@ -101,4 +104,4 @@ def findUser(token) :
 class AllTrips(ListView):
     model = TripItem
     template_name = "trips.html"
-        
+
