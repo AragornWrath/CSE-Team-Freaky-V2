@@ -6,6 +6,7 @@ from django.utils import timezone
 class TripItem(models.Model):
     trip_name = models.CharField(max_length=100)
     date = models.DateField(default=timezone.now)
+    
 class userModel(models.Model) :
     username = models.CharField(max_length=15)
     password = models.CharField(max_length=100)
