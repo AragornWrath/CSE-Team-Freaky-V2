@@ -4,11 +4,6 @@ services:
     ports:
       - '8080:8080'
     volumes:
-      - user-data:/root/
-  
-  mongo:
-    image: mongo:4.2.5
-    ports:
-      - '27017:27017'
+      - user-data:/root/data
 volumes:
   user-data:
