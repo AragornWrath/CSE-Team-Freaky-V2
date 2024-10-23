@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpRequest, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpRequest, HttpResponseRedirect, HttpResponseNotFound
 from django.template import loader, RequestContext
 from pymongo import MongoClient
 from bcrypt import hashpw, gensalt
@@ -79,7 +79,7 @@ def login(request: HttpRequest):
                 redirect.set_cookie('token', token)
                 return redirect
         else :
-            return Http404()    #Replace this with a redirect at one point.
+            return HttpResponseNotFound()    #Replace this with a redirect at one point.
 
 
 def logout (request: HttpRequest) :
