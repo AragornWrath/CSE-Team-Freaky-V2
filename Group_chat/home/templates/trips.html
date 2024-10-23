@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>OOTGC.com</title>
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'home/home.css' %}"/>
+    </head>
+    <body>
+        <div class="header">
+            <h class="project-title">Out of the Group Chat</h>
+            <br/>
+            <img src="roadtrip.jpg" class="header-pic">
+            <h1>Things to do:</h1>
+            <table>
+                {% for item in object_list %}
+                <tr>
+                    <td>{{ item.trip_name }}</td>
+                    <td>{{ item.date }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+                Logout:
+                <form action="logout/" method="post" enctype="application/x-www-form-urlencoded">
+                    {% csrf_token %}
+                    <input type="submit" value="Logout">
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
