@@ -63,6 +63,7 @@ def login(request: HttpRequest):
         query = {'username' : username}
         result = accounts.find_one(query)
 
+        # REPLACE 
         if result != None :
             salt = result['salt']
             attempt = hashpw(password,salt)
@@ -71,6 +72,7 @@ def login(request: HttpRequest):
                 hashed = hashlib.sha256(token.encode()).digest()
                 updates = {'$set': {'token' : hashed}}
                 accounts.update_one(result,updates)
+        # REPLACE
                 redirect = HttpResponseRedirect('/home')
                 redirect.set_cookie('token', token)
                 return redirect
@@ -80,6 +82,7 @@ def login(request: HttpRequest):
 
 def logout (request: HttpRequest) :
     if request.method == 'POST' and 'token' in request.COOKIES:
+        # REPLACE
         user = findUser(request.COOKIES['token'])
         if user != None :
             user['token'] = None
@@ -89,6 +92,7 @@ def logout (request: HttpRequest) :
     return redirect
 
 def findUser(token) :
+    # REPLACE OR REMOVE
     account = accounts.find_one({'token' : hashlib.sha256(token.encode()).digest()})
     if account != None :
         return account
