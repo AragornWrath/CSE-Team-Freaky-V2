@@ -5,7 +5,7 @@ from pymongo import MongoClient
 from bcrypt import hashpw, gensalt
 from home.generateToken import generateToken
 import hashlib
-import secrets
+from .models import userModel
 
 db = MongoClient("mongo")
 collection = db['users']
@@ -41,13 +41,15 @@ def register(request: HttpRequest):
         salt = gensalt()
         hashed = hashpw(password,salt)
 
-        newEntry = {
-            'username' : username,
-            'password' : hashed,
-            'salt' : salt,
-            'token' : None
-        }
-        accounts.insert_one(newEntry)
+        # newEntry = {
+        #     'username' : username,
+        #     'password' : hashed,
+        #     'salt' : salt,
+        #     'token' : None
+        # }
+        newEntry = userModel.objects.create(username=username,password=hashed,salt=salt,token="None")
+        newEntry.save()
+        #accounts.insert_one(newEntry)
     return HttpResponseRedirect('/home')
 
 def login(request: HttpRequest):
