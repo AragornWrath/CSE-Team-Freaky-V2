@@ -1,11 +1,11 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpRequest, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpRequest, HttpResponseRedirect, HttpResponseNotFound
 from django.template import loader, RequestContext
 # from pymongo import MongoClient
 from bcrypt import hashpw, gensalt
 from home.generateToken import generateToken
 import hashlib
-import secrets
+from .models import userModel
 
 from django.views.generic import ListView
 from .models import TripItem
@@ -47,13 +47,15 @@ def register(request: HttpRequest):
         salt = gensalt()
         hashed = hashpw(password,salt)
 
-        newEntry = {
-            'username' : username,
-            'password' : hashed,
-            'salt' : salt,
-            'token' : None
-        }
-        accounts.insert_one(newEntry)
+        # newEntry = {
+        #     'username' : username,
+        #     'password' : hashed,
+        #     'salt' : salt,
+        #     'token' : None
+        # }
+        newEntry = userModel.objects.create(username=username,password=hashed,salt=salt,token="None")
+        newEntry.save()
+        #accounts.insert_one(newEntry)
     return HttpResponseRedirect('/home')
 
 def login(request: HttpRequest):
@@ -80,7 +82,7 @@ def login(request: HttpRequest):
                 redirect.set_cookie('token', token)
                 return redirect
         else :
-            return Http404()    #Replace this with a redirect at one point.
+            return HttpResponseNotFound()    #Replace this with a redirect at one point.
 
 
 def logout (request: HttpRequest) :
