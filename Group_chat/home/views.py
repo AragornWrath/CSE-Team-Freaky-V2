@@ -7,6 +7,9 @@ from home.generateToken import generateToken
 import hashlib
 from .models import userModel
 
+from django.views.generic import ListView
+from .models import TripItem
+
 db = MongoClient("mongo")
 collection = db['users']
 accounts = collection['accounts']
@@ -97,4 +100,7 @@ def findUser(token) :
         return account
     return None
 
+class AllTrips(ListView):
+    model = TripItem
+    template_name = "trips.html"
         

@@ -39,6 +39,15 @@
                 </form>
             {% else %}
             <h1>Hello {{username}}</h1>
+                <form action="register_trip/" method="post" enctype="application/x-www-form-urlencoded">
+                    {% csrf_token %}
+                    <label>Add Trip:
+                        <div class="authentication"/>
+                            <input type="text" name="trip_register" class="register-trip" placeholder="Trip Name"/>
+                        </div>
+                    </label>
+                    <br/>
+                </form>
             {% endif %}
                 Logout:
                 <form action="logout/" method="post" enctype="application/x-www-form-urlencoded">
