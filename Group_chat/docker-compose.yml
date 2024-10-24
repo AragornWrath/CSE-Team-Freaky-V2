@@ -4,6 +4,8 @@ services:
     ports:
       - '8080:8080'
     volumes:
-      - user-data:/root/data
+      - type: bind
+        source: ./db.sqlite3
+        target: /root/db.sqlite3
 volumes:
   user-data:

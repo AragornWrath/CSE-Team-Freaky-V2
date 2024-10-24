@@ -1,10 +1,11 @@
 import string
 import random
 
-def generateToken() :
+def generateToken(length) :
+    extras = "!@#$%^"
     val = ""
-    validChars = string.ascii_letters
-    for letter in range(15) :
+    validChars = string.ascii_letters + string.digits + extras
+    for letter in range(length) :
         val += random.choice(validChars)
     
     return val

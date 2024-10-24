@@ -22,12 +22,12 @@ def index(request: HttpRequest):
     }
     if ('token' in request.COOKIES) :
         token = request.COOKIES['token'].encode()
-        query = {'token' : hashlib.sha256(token).digest()}
-        result = accounts.find_one(query)
-        if result != None :
+        currToken = hashlib.sha256(token).digest()
+        entry = userModel.objects.get(token=str(currToken))
+        if entry != None :
             print('Logging In')
             logged_out = False
-            user = result['username']
+            user = entry.username
             context['username'] = user
             context['logged_out'] = False
             return render(request,"index.html",context)
@@ -40,9 +40,11 @@ def register(request: HttpRequest):
         print(body)
         body = body.split(b'&')         #Assuming the body is urlencoded
         username = body[1].split(b'=')[1].decode()
-        password = body[2].split(b'=')[1]
-        salt = gensalt()
-        hashed = hashpw(password,salt)
+        password = body[2].split(b'=')[1].decode()
+        salt = generateToken(20)
+        
+        combined = (password + salt).encode()
+        hashed = hashlib.sha256(combined).digest()
 
         # newEntry = {
         #     'username' : username,
@@ -61,25 +63,23 @@ def login(request: HttpRequest):
         body = request.body
         body = body.split(b'&')         #Assuming the body is urlencoded
         username = body[1].split(b'=')[1].decode()
-        password = body[2].split(b'=')[1]
-        query = {'username' : username}
-        result = accounts.find_one(query)
-
-        # REPLACE 
-        if result != None :
-            salt = result['salt']
-            attempt = hashpw(password,salt)
-            if attempt == result['password'] :
-                token = generateToken()
+        password = body[2].split(b'=')[1].decode()
+        entry = userModel.objects.get(username=username)
+        if entry != None :
+            salt = entry.salt
+            print(salt)
+            combined = (password + salt).encode()
+            attempt = hashlib.sha256(combined).digest()
+            if str(attempt) == entry.password:
+                token = generateToken(15)
                 hashed = hashlib.sha256(token.encode()).digest()
-                updates = {'$set': {'token' : hashed}}
-                accounts.update_one(result,updates)
-        # REPLACE
+                entry.token = hashed
+                entry.save()
                 redirect = HttpResponseRedirect('/home')
                 redirect.set_cookie('token', token)
                 return redirect
-        else :
-            return HttpResponseNotFound()    #Replace this with a redirect at one point.
+        else:
+            return HttpResponseNotFound()
 
 
 def logout (request: HttpRequest) :
@@ -87,7 +87,7 @@ def logout (request: HttpRequest) :
         # REPLACE
         user = findUser(request.COOKIES['token'])
         if user != None :
-            user['token'] = None
+            user.token = None
     redirect = HttpResponseRedirect('/home')
     if 'token' in request.COOKIES :
         redirect.delete_cookie('token')
@@ -95,7 +95,7 @@ def logout (request: HttpRequest) :
 
 def findUser(token) :
     # REPLACE OR REMOVE
-    account = accounts.find_one({'token' : hashlib.sha256(token.encode()).digest()})
+    account = userModel.objects.get(token=hashlib.sha256(token.encode()).digest())
     if account != None :
         return account
     return None
