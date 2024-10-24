@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>OOTGC.com</title>
+        <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
         {% load static %}
         <link rel="stylesheet" type="text/css" href="{% static 'home/home.css' %}"/>
     </head>
@@ -10,7 +11,6 @@
             <h class="project-title">Out of the Group Chat</h>
             <br/>
             <img src="roadtrip.jpg" class="header-pic">
-            <h1>Things to do:</h1>
             <table>
                 {% for item in object_list %}
                 <tr>
