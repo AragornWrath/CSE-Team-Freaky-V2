@@ -5,6 +5,7 @@ body{
 .header-pic{
     position: absolute;
     background-size: auto;
+    max-width: 10%;
 }
 
 .project-title{

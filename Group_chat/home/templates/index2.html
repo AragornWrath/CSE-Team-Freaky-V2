@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>OOTGC.com</title>
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'home/home2.css' %}"/>
+        <script src="{% static 'home/menu.js' %}"></script>
+    </head>
+    <body>
+        {% csrf_token %}
+        <div class="header">
+            <h1 class="title">OUT OF THE GROUPCHAT</h1>
+            <button class="account-button" onclick="dropdown()">
+                <div class="account">
+                    <img class="person" src="{% static 'home/icons/account.svg' %}">
+                    <img class="down_arrow" src="{% static 'home/icons/down_arrow.svg' %}">
+                </div>
+            </button>
+        </div>
+        <div id="dropdown" class="dropdown-hidden">
+            <a href="/serveRegister2/">Register</a>
+            <a href="/serveLogin2/">Login</a>
+        </div>
+        <div class="collage">
+            <div class="card">
+                <b class="card-title">Plan Trips</b>
+                <img class="card-image" src="{% static 'home/images/nyc.jpg' %}">
+            </div>
+            <div class="card">
+                <b class="card-title">Invite Friends</b>
+                <img class="card-image" src="{% static 'home/images/friends.jpg' %}">
+            </div>
+            <div class="card">
+                <b class="card-title">Book Hotels</b>
+                <img class="card-image" src="{% static 'home/images/hotels.jpg' %}">
+            </div>
+            <div class="card">
+                <b class="card-title">Arrange Flights</b>
+                <img class="card-image" src="{% static 'home/images/flights.jpg' %}">
+            </div>
+            <div class="card">
+                <b class="card-title">Travel the World</b>
+                <img class="card-image" src="{% static 'home/images/paris.jpg' %}">
+            </div>
+            <div class="card">
+                <b class="card-title">Say Oo-La-La</b>
+                <img class="card-image" src="{% static 'home/images/alaska.jpg' %}">
+            </div>
+        </div>
+        <div class="footer">
+            <b class="slogan">Stop Dreaming -> Get Scheming</b>
+        </div>
+    </body>
+</html>

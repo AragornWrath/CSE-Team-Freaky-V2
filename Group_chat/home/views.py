@@ -55,7 +55,7 @@ def register(request: HttpRequest):
         newEntry = userModel.objects.create(username=username,password=hashed,salt=salt,token="None")
         newEntry.save()
         #accounts.insert_one(newEntry)
-    return HttpResponseRedirect('/home')
+    return HttpResponseRedirect('/')
 
 def login(request: HttpRequest):
     if request.method == 'POST' :
@@ -75,7 +75,7 @@ def login(request: HttpRequest):
                 hashed = hashlib.sha256(token.encode()).digest()
                 entry.token = hashed
                 entry.save()
-                redirect = HttpResponseRedirect('/home')
+                redirect = HttpResponseRedirect('/')
                 redirect.set_cookie('token', token)
                 return redirect
         else:
@@ -88,7 +88,7 @@ def logout (request: HttpRequest) :
         user = findUser(request.COOKIES['token'])
         if user != None :
             user.token = None
-    redirect = HttpResponseRedirect('/home')
+    redirect = HttpResponseRedirect('/')
     if 'token' in request.COOKIES :
         redirect.delete_cookie('token')
     return redirect
@@ -100,7 +100,43 @@ def findUser(token) :
         return account
     return None
 
-class AllTrips(ListView):
-    model = TripItem
-    template_name = "trips.html"
+def index2(request: HttpRequest):
+    return render(request, "index2.html")
+
+def login2(request: HttpRequest):
+    pass
+
+
+def serveRegister2(request: HttpRequest):
+    return render(request, "register.html")
+
+def register2(request: HttpRequest):
+    if request.method == 'POST' :
+        print(request)
+        body = request.body
+        print(body)
+        body = body.split(b'&')         #Assuming the body is urlencoded
+        username = body[1].split(b'=')[1].decode()
+        password = body[2].split(b'=')[1].decode()
+        salt = generateToken(20)
+        
+        combined = (password + salt).encode()
+        hashed = hashlib.sha256(combined).digest()
+
+        # newEntry = {
+        #     'username' : username,
+        #     'password' : hashed,
+        #     'salt' : salt,
+        #     'token' : None
+        # }
+        newEntry = userModel.objects.create(username=username,password=hashed,salt=salt,token="None")
+        newEntry.save()
+        #accounts.insert_one(newEntry)
+    return HttpResponseRedirect('/index2/')
+
+# def login2(request: HttpRequest):
+#     return return HttpResponseRedirect('/index2/')
+# class AllTrips(ListView):
+#     model = TripItem
+#     template_name = "trips.html"
 
