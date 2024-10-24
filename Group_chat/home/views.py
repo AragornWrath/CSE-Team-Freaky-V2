@@ -10,9 +10,6 @@ from .models import userModel
 from django.views.generic import ListView
 from .models import TripItem
 
-db = MongoClient("mongo")
-collection = db['users']
-accounts = collection['accounts']
 
 # Create your views here.
 def index_trips(request: HttpRequest):
