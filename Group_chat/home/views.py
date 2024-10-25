@@ -9,6 +9,7 @@ from .models import userModel
 
 from django.views.generic import ListView
 from .models import TripItem
+from django.core.exceptions import ObjectDoesNotExist
 
 
 # Create your views here.
@@ -23,14 +24,17 @@ def index(request: HttpRequest):
     if ('token' in request.COOKIES) :
         token = request.COOKIES['token'].encode()
         currToken = hashlib.sha256(token).digest()
-        entry = userModel.objects.get(token=str(currToken))
-        if entry != None :
-            print('Logging In')
-            logged_out = False
-            user = entry.username
-            context['username'] = user
-            context['logged_out'] = False
-            return render(request,"index2.html",context)
+        try:
+            entry = userModel.objects.get(token=str(currToken))
+            if entry != None :
+                print('Logging In')
+                logged_out = False
+                user = entry.username
+                context['username'] = user
+                context['logged_out'] = False
+                return render(request,"index2.html",context)
+        except ObjectDoesNotExist:
+            a=1
     return render(request, "index2.html", context)
 
 def register(request: HttpRequest):
