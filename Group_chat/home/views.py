@@ -16,7 +16,7 @@ def index_trips(request: HttpRequest):
     trips = TripItem.objects.all()  # Fetch all task objects
     return render(request, 'trips.html', {'object_list': trips})
 
-def index(request: HttpRequest):
+def index2(request: HttpRequest):
     context = {
         'logged_out' : True
     }
@@ -30,8 +30,8 @@ def index(request: HttpRequest):
             user = entry.username
             context['username'] = user
             context['logged_out'] = False
-            return render(request,"index.html",context)
-    return render(request, "index.html", context)
+            return render(request,"index2.html",context)
+    return render(request, "index2.html", context)
 
 def register(request: HttpRequest):
     if request.method == 'POST' :
@@ -100,39 +100,39 @@ def findUser(token) :
         return account
     return None
 
-def index2(request: HttpRequest):
+def index(request: HttpRequest):
     return render(request, "index2.html")
 
 def login2(request: HttpRequest):
     pass
 
 
-def serveRegister2(request: HttpRequest):
+def serveRegister(request: HttpRequest):
     return render(request, "register.html")
 
-def register2(request: HttpRequest):
-    if request.method == 'POST' :
-        print(request)
-        body = request.body
-        print(body)
-        body = body.split(b'&')         #Assuming the body is urlencoded
-        username = body[1].split(b'=')[1].decode()
-        password = body[2].split(b'=')[1].decode()
-        salt = generateToken(20)
+# def register2(request: HttpRequest):
+#     if request.method == 'POST' :
+#         print(request)
+#         body = request.body
+#         print(body)
+#         body = body.split(b'&')         #Assuming the body is urlencoded
+#         username = body[1].split(b'=')[1].decode()
+#         password = body[2].split(b'=')[1].decode()
+#         salt = generateToken(20)
         
-        combined = (password + salt).encode()
-        hashed = hashlib.sha256(combined).digest()
+#         combined = (password + salt).encode()
+#         hashed = hashlib.sha256(combined).digest()
 
-        # newEntry = {
-        #     'username' : username,
-        #     'password' : hashed,
-        #     'salt' : salt,
-        #     'token' : None
-        # }
-        newEntry = userModel.objects.create(username=username,password=hashed,salt=salt,token="None")
-        newEntry.save()
-        #accounts.insert_one(newEntry)
-    return HttpResponseRedirect('/index2/')
+#         # newEntry = {
+#         #     'username' : username,
+#         #     'password' : hashed,
+#         #     'salt' : salt,
+#         #     'token' : None
+#         # }
+#         newEntry = userModel.objects.create(username=username,password=hashed,salt=salt,token="None")
+#         newEntry.save()
+#         #accounts.insert_one(newEntry)
+#     return HttpResponseRedirect('/index2/')
 
 # def login2(request: HttpRequest):
 #     return return HttpResponseRedirect('/index2/')
