@@ -110,6 +110,9 @@ def login2(request: HttpRequest):
 def serveRegister(request: HttpRequest):
     return render(request, "register.html")
 
+def serveLogin(request: HttpRequest):
+    return render(request, "login.html")
+
 # def register2(request: HttpRequest):
 #     if request.method == 'POST' :
 #         print(request)
