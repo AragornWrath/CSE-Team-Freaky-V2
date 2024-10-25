@@ -78,6 +78,10 @@ def login(request: HttpRequest):
                 redirect = HttpResponseRedirect('/')
                 redirect.set_cookie('token', token)
                 return redirect
+            else:
+
+                redirect = HttpResponseRedirect('/serveLogin/')
+                return redirect
         else:
             return HttpResponseNotFound()
 
