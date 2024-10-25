@@ -17,6 +17,9 @@
                     <input type="password" name="password" class="auth-text-box"/>
                 </label>
                 <br/>
+                {% if invalid %}
+                <h3 class="invalid" style="color: red">Invalid Login!</h3>
+                {% endif %}
                 <button class="auth-button" type="submit">Login</button>
             </form>
         </div>

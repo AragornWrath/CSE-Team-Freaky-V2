@@ -41,6 +41,13 @@ def register(request: HttpRequest):
         body = body.split(b'&')         #Assuming the body is urlencoded
         username = body[1].split(b'=')[1].decode()
         password = body[2].split(b'=')[1].decode()
+        newAcc = userModel.objects.filter(username=username).first()
+        if (username == "" or password == "") :
+            return invalidRegister()
+        
+        if (newAcc != None) :
+            return invalidRegister()
+        
         salt = generateToken(20)
         
         combined = (password + salt).encode()
@@ -58,13 +65,19 @@ def register(request: HttpRequest):
     return HttpResponseRedirect('/')
 
 def login(request: HttpRequest):
+    invalid = False
     if request.method == 'POST' :
         print(request)
         body = request.body
-        body = body.split(b'&')         #Assuming the body is urlencoded
+        body = body.split(b'&')                             #Assuming the body is urlencoded
         username = body[1].split(b'=')[1].decode()
         password = body[2].split(b'=')[1].decode()
-        entry = userModel.objects.get(username=username)
+        if username == "" or password == "" :
+            return wrongPassword()
+        entry = userModel.objects.filter(username=username).first()
+        print(entry)
+        print(username)
+        print(password)
         if entry != None :
             salt = entry.salt
             print(salt)
@@ -76,15 +89,24 @@ def login(request: HttpRequest):
                 entry.token = hashed
                 entry.save()
                 redirect = HttpResponseRedirect('/')
+                print('SUCCESS')
                 redirect.set_cookie('token', token)
                 return redirect
             else:
-
-                redirect = HttpResponseRedirect('/serveLogin/')
-                return redirect
+                return invalidLogin()
         else:
-            return HttpResponseNotFound()
+            return invalidLogin()
 
+def invalidLogin() :
+    print("Invalid")
+    redirect = HttpResponseRedirect('/serveLogin/')
+    redirect.context = {'invalid' : True}
+    return redirect
+
+def invalidRegister() :
+    print("Invalid")
+    redirect = HttpResponseRedirect('/serveRegister')
+    return redirect
 
 def logout (request: HttpRequest) :
     if request.method == 'POST' and 'token' in request.COOKIES:
