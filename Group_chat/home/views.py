@@ -16,7 +16,7 @@ def index_trips(request: HttpRequest):
     trips = TripItem.objects.all()  # Fetch all task objects
     return render(request, 'trips.html', {'object_list': trips})
 
-def index2(request: HttpRequest):
+def index(request: HttpRequest):
     context = {
         'logged_out' : True
     }
@@ -100,7 +100,7 @@ def findUser(token) :
         return account
     return None
 
-def index(request: HttpRequest):
+def index2(request: HttpRequest):
     return render(request, "index2.html")
 
 def login2(request: HttpRequest):

@@ -17,10 +17,17 @@
                 </div>
             </button>
         </div>
+        {% if logged_out %}
         <div id="dropdown" class="dropdown-hidden">
             <a href="/serveRegister/">Register</a>
             <a href="/serveLogin/">Login</a>
         </div>
+        {% else %}
+        <div id="dropdown" class="dropdown-hidden">
+            <a href="/trips/">Trips</a>
+            <a href="/logout/">Logout</a>
+        </div>
+        {% endif %}
         <div class="collage">
             <div class="card">
                 <b class="card-title">Plan Trips</b>
