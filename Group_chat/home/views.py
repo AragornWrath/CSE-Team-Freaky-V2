@@ -39,9 +39,9 @@ def index(request: HttpRequest):
 
 def register(request: HttpRequest):
     if request.method == 'POST' :
-        print(request)
+        #print(request)
         body = request.body
-        print(body)
+        #print(body)
         body = body.split(b'&')         #Assuming the body is urlencoded
         username = body[1].split(b'=')[1].decode()
         password = body[2].split(b'=')[1].decode()
@@ -71,7 +71,7 @@ def register(request: HttpRequest):
 def login(request: HttpRequest):
     invalid = False
     if request.method == 'POST' :
-        print(request)
+        #print(request)
         body = request.body
         body = body.split(b'&')                             #Assuming the body is urlencoded
         username = body[1].split(b'=')[1].decode()
@@ -79,12 +79,12 @@ def login(request: HttpRequest):
         if username == "" or password == "" :
             return invalidLogin()
         entry = userModel.objects.filter(username=username).first()
-        print(entry)
-        print(username)
-        print(password)
+        #print(entry)
+        #print(username)
+        #print(password)
         if entry != None :
             salt = entry.salt
-            print(salt)
+            #print(salt)
             combined = (password + salt).encode()
             attempt = hashlib.sha256(combined).digest()
             if str(attempt) == entry.password:
@@ -93,7 +93,7 @@ def login(request: HttpRequest):
                 entry.token = hashed
                 entry.save()
                 redirect = HttpResponseRedirect('/')
-                print('SUCCESS')
+                #print('SUCCESS')
                 redirect.set_cookie('token', token)
                 return redirect
             else:
@@ -102,13 +102,13 @@ def login(request: HttpRequest):
             return invalidLogin()
 
 def invalidLogin() :
-    print("Invalid")
+    #print("Invalid")
     redirect = HttpResponseRedirect('/serveLogin/')
     redirect.context = {'invalid' : True}
     return redirect
 
 def invalidRegister() :
-    print("Invalid")
+    #print("Invalid")
     redirect = HttpResponseRedirect('/serveRegister')
     return redirect
 
