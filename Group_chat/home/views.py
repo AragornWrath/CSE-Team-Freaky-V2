@@ -83,8 +83,7 @@ def login(request: HttpRequest):
                 redirect.set_cookie('token', token)
                 return redirect
             else:
-
-                redirect = HttpResponseRedirect('/serveLogin/')
+                redirect = HttpResponseRedirect('/serveLoginFailed/')
                 return redirect
         else:
             return HttpResponseNotFound()
@@ -121,33 +120,7 @@ def serveRegister(request: HttpRequest):
 def serveLogin(request: HttpRequest):
     return render(request, "login.html")
 
-# def register2(request: HttpRequest):
-#     if request.method == 'POST' :
-#         print(request)
-#         body = request.body
-#         print(body)
-#         body = body.split(b'&')         #Assuming the body is urlencoded
-#         username = body[1].split(b'=')[1].decode()
-#         password = body[2].split(b'=')[1].decode()
-#         salt = generateToken(20)
-        
-#         combined = (password + salt).encode()
-#         hashed = hashlib.sha256(combined).digest()
 
-#         # newEntry = {
-#         #     'username' : username,
-#         #     'password' : hashed,
-#         #     'salt' : salt,
-#         #     'token' : None
-#         # }
-#         newEntry = userModel.objects.create(username=username,password=hashed,salt=salt,token="None")
-#         newEntry.save()
-#         #accounts.insert_one(newEntry)
-#     return HttpResponseRedirect('/index2/')
-
-# def login2(request: HttpRequest):
-#     return return HttpResponseRedirect('/index2/')
-# class AllTrips(ListView):
-#     model = TripItem
-#     template_name = "trips.html"
+def serveLoginFailed(request: HttpRequest):
+    return render(request, "loginFailed.html")
 
