@@ -77,7 +77,7 @@ def login(request: HttpRequest):
         username = body[1].split(b'=')[1].decode()
         password = body[2].split(b'=')[1].decode()
         if username == "" or password == "" :
-            return wrongPassword()
+            return invalidLogin()
         entry = userModel.objects.filter(username=username).first()
         print(entry)
         print(username)
