@@ -99,7 +99,7 @@ def login(request: HttpRequest):
                 #entry['token'] = hashed
                 redirect = HttpResponseRedirect('/')
                 print('SUCCESS')
-                redirect.set_cookie('token', token)
+                redirect.set_cookie('token', token, httponly=True)
                 return redirect
             else:
                 return invalidLogin()
