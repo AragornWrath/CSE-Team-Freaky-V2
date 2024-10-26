@@ -4,7 +4,7 @@ import random
 def generateToken(length) :
     extras = "!@#$%^"
     val = ""
-    validChars = string.ascii_letters + string.digits + extras
+    validChars = string.ascii_letters + string.digits
     for letter in range(length) :
         val += random.choice(validChars)
     

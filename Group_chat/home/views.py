@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect, HttpResponseNotFound
 from django.template import loader, RequestContext
-# from pymongo import MongoClient
+from pymongo import MongoClient
 from bcrypt import hashpw, gensalt
 from home.generateToken import generateToken
 import hashlib
@@ -11,6 +11,9 @@ from django.views.generic import ListView
 from .models import TripItem
 from django.core.exceptions import ObjectDoesNotExist
 
+db = MongoClient("mongo")
+collection = db['users']
+accounts = collection['accounts']
 
 # Create your views here.
 def index_trips(request: HttpRequest):
@@ -24,28 +27,28 @@ def index(request: HttpRequest):
     if ('token' in request.COOKIES) :
         token = request.COOKIES['token'].encode()
         currToken = hashlib.sha256(token).digest()
-        try:
-            entry = userModel.objects.get(token=str(currToken))
-            if entry != None :
-                print('Logging In')
-                logged_out = False
-                user = entry.username
-                context['username'] = user
-                context['logged_out'] = False
-                return render(request,"index2.html",context)
-        except ObjectDoesNotExist:
-            a=1
+        print(currToken)
+        entry = accounts.find_one({'token' : currToken})
+        if entry != None :
+            print('Logging In')
+            logged_out = False
+            user = entry['username']
+            context['username'] = user
+            context['logged_out'] = False
+            return render(request,"index2.html",context)
     return render(request, "index2.html", context)
 
 def register(request: HttpRequest):
     if request.method == 'POST' :
-        #print(request)
+        print(request)
         body = request.body
-        #print(body)
+        print(body)
         body = body.split(b'&')         #Assuming the body is urlencoded
         username = body[1].split(b'=')[1].decode()
         password = body[2].split(b'=')[1].decode()
-        newAcc = userModel.objects.filter(username=username).first()
+        query = {'username' : username}
+        newAcc = accounts.find_one(query)
+
         if (username == "" or password == "") :
             return invalidRegister()
         
@@ -53,23 +56,22 @@ def register(request: HttpRequest):
             return invalidRegister()
         
         salt = generateToken(20)
-        
         combined = (password + salt).encode()
         hashed = hashlib.sha256(combined).digest()
 
-        # newEntry = {
-        #     'username' : username,
-        #     'password' : hashed,
-        #     'salt' : salt,
-        #     'token' : None
-        # }
-        newEntry = userModel.objects.create(username=username,password=hashed,salt=salt,token="None")
-        newEntry.save()
-        #accounts.insert_one(newEntry)
+        newEntry = {
+            'username' : username,
+            'password' : hashed,
+            'salt' : salt,
+            'token' : None
+        }
+        accounts.insert_one(newEntry)
+    
     return HttpResponseRedirect('/')
 
 def login(request: HttpRequest):
     invalid = False
+    print("LOGIN")
     if request.method == 'POST' :
         #print(request)
         body = request.body
@@ -78,22 +80,22 @@ def login(request: HttpRequest):
         password = body[2].split(b'=')[1].decode()
         if username == "" or password == "" :
             return invalidLogin()
-        entry = userModel.objects.filter(username=username).first()
-        #print(entry)
-        #print(username)
-        #print(password)
+        entry = accounts.find_one({'username': username})
+        print("Finding User")
         if entry != None :
-            salt = entry.salt
-            #print(salt)
+            print("Found User")
+            salt = entry['salt']
             combined = (password + salt).encode()
             attempt = hashlib.sha256(combined).digest()
-            if str(attempt) == entry.password:
+
+            if attempt == entry['password']:
                 token = generateToken(15)
                 hashed = hashlib.sha256(token.encode()).digest()
-                entry.token = hashed
-                entry.save()
+                updates = {'$set' : {'token' : hashed}}
+                accounts.update_one(entry, updates)
+                #entry['token'] = hashed
                 redirect = HttpResponseRedirect('/')
-                #print('SUCCESS')
+                print('SUCCESS')
                 redirect.set_cookie('token', token)
                 return redirect
             else:
@@ -104,20 +106,21 @@ def login(request: HttpRequest):
 def invalidLogin() :
     #print("Invalid")
     redirect = HttpResponseRedirect('/serveLogin/')
+    #Doesn't display, not sure why
     redirect.context = {'invalid' : True}
     return redirect
 
 def invalidRegister() :
     #print("Invalid")
-    redirect = HttpResponseRedirect('/serveRegister')
+    redirect = HttpResponseRedirect('/serveRegister/')
     return redirect
 
 def logout (request: HttpRequest) :
     if request.method == 'POST' and 'token' in request.COOKIES:
-        # REPLACE
         user = findUser(request.COOKIES['token'])
         if user != None :
-            user.token = None
+            updates = {'$set' : {'token' : None}}
+            accounts.update_one(user, updates)
     redirect = HttpResponseRedirect('/')
     if 'token' in request.COOKIES :
         redirect.delete_cookie('token')
@@ -125,7 +128,8 @@ def logout (request: HttpRequest) :
 
 def findUser(token) :
     # REPLACE OR REMOVE
-    account = userModel.objects.get(token=hashlib.sha256(token.encode()).digest())
+    query = {'token' : hashlib.sha256(token.encode()).digest()}
+    account = accounts.find_one(query)
     if account != None :
         return account
     return None
