@@ -20,6 +20,9 @@ def index_trips(request: HttpRequest):
     trips = TripItem.objects.all()  # Fetch all task objects
     return render(request, 'trips.html', {'object_list': trips})
 
+def add_trip():
+    pass
+
 def index(request: HttpRequest):
     context = {
         'logged_out' : True
@@ -105,8 +108,7 @@ def login(request: HttpRequest):
 
 def invalidLogin() :
     #print("Invalid")
-    redirect = HttpResponseRedirect('/serveLogin/')
-    #Doesn't display, not sure why
+    redirect = HttpResponseRedirect('/serveLoginFailed/')
     redirect.context = {'invalid' : True}
     return redirect
 
