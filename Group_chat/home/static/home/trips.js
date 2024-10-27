@@ -1,3 +1,21 @@
+function dropdown(){
+    if (document.getElementById("dropdown").className == "dropdown-hidden"){
+        document.getElementById("dropdown").className = "dropdown-show";
+    }
+    else {
+        document.getElementById("dropdown").className = "dropdown-hidden";
+    }
+}
+
+function addTripPopUp(){
+    if (document.getElementById("addTripCard").className == "dropdown-hidden"){
+        document.getElementById("addTripCard").className = "add-trip-card";
+    }
+    else {
+        document.getElementById("addTripCard").className = "dropdown-hidden";
+    }
+}
+
 /* Ajax for creating a trip */
 /* trip date will be sent as 'yyyy-mm-dd' */
 
@@ -21,6 +39,22 @@ function addTrip(){
     const tripJSON = {"tripName": tripName, "tripDestination": tripDestination, "date": date};
     request.open("POST", "/add-trip");
     request.send(JSON.stringify(tripJSON));
+}
+
+//When adding a trip use "afterbegin" so that way the add trip button is pushed to the end
+addTripToHTML(messageJSON){
+
+}
+
+creatTripHTML(){
+
+}
+
+function addMessageToChat(messageJSON) {
+    const chatMessages = document.getElementById("chat-messages");
+    chatMessages.insertAdjacentHTML("beforeend", chatMessageHTML(messageJSON))
+    chatMessages.scrollIntoView(false);
+    chatMessages.scrollTop = chatMessages.scrollHeight - chatMessages.clientHeight;
 }
 
 /* Model ajax from jesse*/

@@ -2,29 +2,56 @@
 <html>
     <head>
         <title>OOTGC.com</title>
-        <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
-        {% load static %}
-        <link rel="stylesheet" type="text/css" href="{% static 'home/home.css' %}"/>
+        <link rel="stylesheet" type="text/css" href="trips.css"/>
+        <script src="trips.js"></script>
     </head>
     <body>
         <div class="header">
-            <h class="project-title">Out of the Group Chat</h>
-            <br/>
-            <img src="roadtrip.jpg" class="header-pic">
-            <table>
-                {% for item in object_list %}
-                <tr>
-                    <td>{{ item.trip_name }}</td>
-                    <td>{{ item.date }}</td>
-                    <td>{{ item.trip_destination }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-                Logout:
-                <form action="logout/" method="post" enctype="application/x-www-form-urlencoded">
-                    {% csrf_token %}
-                    <input type="submit" value="Logout">
-                </form>
+            <div class="header-container">
+            <h1>My Trips</h1>
+            <button class="add-trip-button" onclick="addTripPopUp()">Add Trip +</button>
+            </div>
+            <button class="account-button" onclick="dropdown()">
+                <div class="account">
+                    <img class="person" src="icons/account.svg">
+                    <img class="down_arrow" src="icons/down_arrow.svg">
+                </div>
+            </button>
+        </div>
+        <div id="dropdown" class="dropdown-hidden">
+            <a>Register</a>
+            <a>Login</a>
+        </div>
+        <div class="trips-table">
+            <div id="addTripCard" class="add-trip-card">
+                <b>Trip Name:</b>
+                <input class="addTripTextBox" type="text">
+                <b>Destination:</b>
+                <input class="addTripTextBox" type="text">
+                <b>Date:</b>
+                <input class="addTripTextBox" type="date">
+                <button id="submit-trip-button" class="done" onclick="addTrip()">&#10003;</button>
+            </div>
+            <div class="trip">
+                <div class="trip-header">
+                    <b class="trip-title">Example Trip</b>
+                    <input type="date">
+                </div>
+                <b class="trip-destination">Tokyo</b>
+            </div>
+            <div class="trip">
+                <div class="trip-header">
+                    <b class="trip-title">Example Trip</b>
+                    <input type="date">
+                </div>
+                <b class="trip-destination">Tokyo</b>
+            </div>
+            <div class="trip">
+                <div class="trip-header">
+                    <b class="trip-title">Example Trip</b>
+                    <input type="date">
+                </div>
+                <b class="trip-destination">Tokyo</b>
             </div>
         </div>
     </body>
