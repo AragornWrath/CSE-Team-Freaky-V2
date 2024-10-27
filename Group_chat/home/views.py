@@ -14,15 +14,60 @@ from django.core.exceptions import ObjectDoesNotExist
 db = MongoClient("mongo")
 collection = db['users']
 accounts = collection['accounts']
+trips = collection['trips']
+#{'username': username, 'tripname': tripname, 'date': date}
 
 # Create your views here.
+
+#TODO: GET USERNAME 
 def index_trips(request: HttpRequest):
-    trips = TripItem.objects.all()  # Fetch all task objects
-    return render(request, 'trips.html', {'object_list': trips})
+    #Getting the user's auth token
+    token = 'NULL'
+    if ('token' in request.COOKIES) :
+        token = request.COOKIES['token']
+    user = findUser(token)
 
-def add_trip():
-    pass
+    #If users auth token is not found in the db -> invalid request
+    username = 'NULL'
+    if user != None:
+        username = user.username
+    if username == 'NULL':
+        return #RETURN SOMETHING HERE NOT SURE WHAT YET
+    
+    trips = trips.find({'username': username})
+    context = {
+        'trips' : trips
+    }
+    return render(request, 'trips.html', context)
 
+def add_trip(request: HttpRequest):
+    #Getting the user's auth token
+    token = 'NULL'
+    if ('token' in request.COOKIES) :
+        token = request.COOKIES['token']
+    user = findUser(token)
+
+    #If users auth token is not found in the db -> invalid request
+    username = 'NULL'
+    if user != None:
+        username = user.username
+    if username == 'NULL': 
+        return #RETURN REDIRECT MAYBE OR SOMETHING NOT SURE 
+    
+    tripname = 'GET TRIPNAME FROM AJAX REQUEST'
+    destination = 'GET DESTINATION FROM AJAX HTTP REQUEST'
+    date = 'GET DATE FROM AJAX HTTP REQUEST'
+    trip = {'username': username, 'tripname': tripname, 'destination': destination, 'date': date}
+    trips.insert_one(trip)
+    
+    trips = trips.find({'username': username})
+    context = {
+        'trips' : trips
+    }
+    return render(request, 'trips.html', context)
+
+#TODO: GET PUBLIC TRIPS IN INDEX
+#DISPLAY THEM AT THE BOTTOM OF THE WEBSITE FOR ALL USERS TO SEE
 def index(request: HttpRequest):
     context = {
         'logged_out' : True
