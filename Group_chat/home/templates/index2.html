@@ -10,6 +10,7 @@
         {% csrf_token %}
         <div class="header">
             <h1 class="title">OUT OF THE GROUPCHAT</h1>
+            <b> username: {{username}} </b>
             <button class="account-button" onclick="dropdown()">
                 <div class="account">
                     <img class="person" src="{% static 'home/icons/account.svg' %}">
@@ -27,7 +28,6 @@
             <a href="/trips/">Trips</a>
             <a href="/all_trips/">All Trips</a>
             <a href="/logout/">Logout</a>
-            <b> username: {{username}} </b>
         </div>
         {% endif %}
         <div class="collage">
