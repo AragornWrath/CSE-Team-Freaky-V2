@@ -6,10 +6,14 @@ from bcrypt import hashpw, gensalt
 from home.generateToken import generateToken
 import hashlib
 from .models import userModel
+from django.http import JsonResponse
 
 from django.views.generic import ListView
 from .models import TripItem
 from django.core.exceptions import ObjectDoesNotExist
+import json
+
+import logging
 
 db = MongoClient("mongo")
 collection = db['users']
@@ -21,6 +25,13 @@ trips = collection['trips']
 
 #TODO: GET USERNAME 
 def index_trips(request: HttpRequest):
+    # print("\n\n***REQUEST START***\n")
+    # print(request)
+    # print("\n***REQUEST END***\n\n")
+    # print("\n\n***REQUEST BODY START***\n")
+    # print(request.body)
+    # print("\n\n***REQUEST END***\n\n")
+
     #Getting the user's auth token
     token = 'NULL'
     if ('token' in request.COOKIES) :
@@ -30,17 +41,23 @@ def index_trips(request: HttpRequest):
     #If users auth token is not found in the db -> invalid request
     username = 'NULL'
     if user != None:
-        username = user.username
+        username = user['username']
     if username == 'NULL':
         return #RETURN SOMETHING HERE NOT SURE WHAT YET
     
-    trips = trips.find({'username': username})
+    tripscontext = trips.find({'username': username})
     context = {
-        'trips' : trips
+        'trips' : tripscontext
     }
     return render(request, 'trips.html', context)
 
 def add_trip(request: HttpRequest):
+    # print("\n\n***REQUEST START***\n")
+    # print(request)
+    # print("\n***REQUEST END***\n\n")
+    # print("\n\n***REQUEST BODY START***\n")
+    # print(request.body)
+    # print("\n\n***REQUEST END***\n\n")
     #Getting the user's auth token
     token = 'NULL'
     if ('token' in request.COOKIES) :
@@ -50,21 +67,33 @@ def add_trip(request: HttpRequest):
     #If users auth token is not found in the db -> invalid request
     username = 'NULL'
     if user != None:
-        username = user.username
+        username = user['username']
     if username == 'NULL': 
         return #RETURN REDIRECT MAYBE OR SOMETHING NOT SURE 
-    
-    tripname = 'GET TRIPNAME FROM AJAX REQUEST'
-    destination = 'GET DESTINATION FROM AJAX HTTP REQUEST'
-    date = 'GET DATE FROM AJAX HTTP REQUEST'
-    trip = {'username': username, 'tripname': tripname, 'destination': destination, 'date': date}
+    decoded_body = json.loads(request.body.decode())
+    print("\n\n **** decoded body start *****\n")
+    print(decoded_body, flush=True)
+    print("\n **** decoded body end *****\n\n", flush=True)
+
+    # rbody = rbody.decode()
+    tripname = decoded_body["tripName"]
+    destination = decoded_body["tripDestination"]
+    trip = {'username': username, 'tripname': tripname, 'destination': destination}
     trips.insert_one(trip)
     
-    trips = trips.find({'username': username})
-    context = {
-        'trips' : trips
+    # tripscontext = trips.find_one({'username': username})
+    # l = []
+    # for i in tripscontext:
+    #     i.pop("_id")
+    #     l.append(i)
+
+    trip.pop("_id")
+
+    response = {
+        "trips": [trip]
     }
-    return render(request, 'trips.html', context)
+
+    return JsonResponse(response)
 
 #TODO: GET PUBLIC TRIPS IN INDEX
 #DISPLAY THEM AT THE BOTTOM OF THE WEBSITE FOR ALL USERS TO SEE
