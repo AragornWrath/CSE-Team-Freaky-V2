@@ -11,5 +11,6 @@ urlpatterns = [
     path('serveLogin/', views.serveLogin, name='serveLogin'),
     path('serveLoginFailed/', views.serveLoginFailed, name='serveLogin'),
     path('serveLoginFailed/login/', views.login, name='login'),
-    path('trips/add-trip/', views.add_trip, name='addTrip')
+    path('trips/add-trip/', views.add_trip, name='addTrip'),
+    path('all_trips/', views.all_trips, name='allTrips'),
 ]

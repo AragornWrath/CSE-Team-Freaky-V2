@@ -23,6 +23,17 @@ trips = collection['trips']
 
 # Create your views here.
 
+def all_trips(request: HttpRequest):
+    trips_cursor = trips.find({})
+    trips_list = []
+    for trip in trips_cursor:
+        trip.pop("_id")
+        trips_list.append(trip)
+    context = {
+        "trips": trips_list
+    }
+    return render(request, "all_trips.html", context)
+
 #TODO: GET USERNAME 
 def index_trips(request: HttpRequest):
     # print("\n\n***REQUEST START***\n")
