@@ -150,9 +150,13 @@
     cursor: pointer;
 }
 
+.page{
+    position:relative;
+}
+
 .likes-list{
     position:fixed;
-    background-color: pink;
+    background-color: orange;
     padding-right: 20px;
     /* width: 200px;
     height: 200px; */
@@ -161,8 +165,27 @@
     right: 0vw;
     bottom: 0vh;
     left: 90vw;
+    margin: 10px;
 }
 
-.page{
-    position:relative;
+.likes-list-hidden{
+    display: none;
+}
+
+.close-likes{
+    background-color: red;
+    border-radius: 10px;
+    border-style: none;
+    position: fixed;
+    padding: 10px;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-left: 10px;
+    bottom: 2vh;
+    right: 1vw;
+}
+
+.close-likes:hover{
+    cursor: pointer;
+    background-color: rgb(150, 5, 5);
 }

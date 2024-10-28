@@ -43,15 +43,21 @@ function addViewLikesHTML(response, tripID){
     for (let liker of likes_list){
         html += createViewLikesHTML(liker)
     }
-    html += "</ul>"
+    html += '</ul><button class="close-likes" onclick="closeLikes()">X</button>'
     likes_popup = document.getElementById("likes_popup");
-    likes_popup.innerHTML = html
-    console.log(html)
+    likes_popup.innerHTML = html;
+    likes_popup.className = "likes-list";
 }
 
 function createViewLikesHTML(liker){
     const html = "<li>" + liker + "</li>"
     return html
+}
+
+function closeLikes(){
+    likes_popup = document.getElementById("likes_popup");
+    likes_popup.innerHTML = '';
+    likes_popup.className = "likes-list-hidden";
 }
 
 function addLike(tripID){
