@@ -15,4 +15,5 @@ urlpatterns = [
     path('all_trips/', views.all_trips, name='allTrips'),
     path('all_trips/add-like', views.add_like, name="addLike"),
     path('all_trips/delete-like', views.delete_like, name="deleteLike"),
+    path('all_trips/view-likes', views.view_likes, name="viewLikes"),
 ]

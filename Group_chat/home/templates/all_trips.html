@@ -8,6 +8,7 @@
     </head>
     <body>
         {% csrf_token %}
+        <div class="page">
         <div class="header">
             <h1 class="title">Travel Collection</h1>
             <button class="account-button" onclick="dropdown()">
@@ -35,18 +36,12 @@
                     <button id="likeButton_{% tripID trip%}" class="like-button-unclicked" onclick="likeButton( '{% tripID trip%}' )">
                         <img id="likeButtonImage"class="like-button-unclicked-image" src="{% static 'home/icons/empty_heart.svg' %}">
                     </button>
-                    <button id="number-of-likes_{% tripID trip%}" class="number-of-likes" onclick="viewLikes()">{% tripLikes trip %}</button>
+                    <button id="number-of-likes_{% tripID trip%}" class="number-of-likes" onclick="viewLikes( '{% tripID trip%}' )">{% tripLikes trip %}</button>
                 </div>
             </div>
             {% endfor %}
         </div>
-        <div class="likes-list">
-            <ul>
-                <li>Marcus</li>
-                <li>Will</li>
-                <li>Yazgi</li>
-                <li>Faizaan</li>
-            </ul>
+        <div id="likes_popup" class="likes-list"> </div>
         </div>
     </body>
 </html>

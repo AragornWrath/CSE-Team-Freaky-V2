@@ -151,8 +151,18 @@
 }
 
 .likes-list{
-    position: absolute;
+    position:fixed;
+    background-color: pink;
+    padding-right: 20px;
+    /* width: 200px;
+    height: 200px; */
     z-index: 100;
-    
+    top: 0vh;
+    right: 0vw;
+    bottom: 0vh;
+    left: 90vw;
 }
 
+.page{
+    position:relative;
+}

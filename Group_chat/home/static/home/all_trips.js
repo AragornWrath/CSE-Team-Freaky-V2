@@ -21,8 +21,37 @@ function likeButton(tripID){
     }
 }
 
-function viewLikes(){
-    return
+function viewLikes(tripID){
+    const request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) {
+            addViewLikesHTML(this.response, tripID);
+            console.log(this.response);
+        }
+    }
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value; 
+    const likeJSON = {"tripID": tripID};
+    request.open("POST", "view-likes");
+    request.setRequestHeader("X-CSRFToken", csrftoken)
+    request.send(JSON.stringify(likeJSON))
+}
+
+function addViewLikesHTML(response, tripID){
+    parsed_response = JSON.parse(response);
+    likes_list = parsed_response["likes"]
+    let html = "<ul>"
+    for (let liker of likes_list){
+        html += createViewLikesHTML(liker)
+    }
+    html += "</ul>"
+    likes_popup = document.getElementById("likes_popup");
+    likes_popup.innerHTML = html
+    console.log(html)
+}
+
+function createViewLikesHTML(liker){
+    const html = "<li>" + liker + "</li>"
+    return html
 }
 
 function addLike(tripID){

@@ -23,6 +23,20 @@ trips = collection['trips']
 
 # Create your views here.
 
+def view_likes(request: HttpRequest):
+    print("\n\n******response******\n\n")
+    print(request, flush=True)
+    decoded_body = json.loads(request.body.decode())
+    tripID = decoded_body["tripID"]
+    trip = trips.find_one({"tripID": tripID})
+    if trip == None:
+        return
+    likes = trip.get('likes', [])
+    response = {
+        "likes": likes
+        }
+    return JsonResponse(response)
+
 def delete_like(request: HttpRequest):
     token = 'NULL'
     if ('token' in request.COOKIES) :
@@ -156,9 +170,9 @@ def add_trip(request: HttpRequest):
     if username == 'NULL': 
         return #RETURN REDIRECT MAYBE OR SOMETHING NOT SURE 
     decoded_body = json.loads(request.body.decode())
-    print("\n\n **** decoded body start *****\n")
-    print(decoded_body, flush=True)
-    print("\n **** decoded body end *****\n\n", flush=True)
+    #print("\n\n **** decoded body start *****\n")
+    #print(decoded_body, flush=True)
+    #print("\n **** decoded body end *****\n\n", flush=True)
 
     # rbody = rbody.decode()
     tripname = decoded_body["tripName"]
