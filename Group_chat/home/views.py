@@ -7,6 +7,7 @@ from home.generateToken import generateToken
 import hashlib
 from .models import userModel
 from django.http import JsonResponse
+from django.http import HttpResponseForbidden
 
 from django.views.generic import ListView
 from .models import TripItem
@@ -32,7 +33,7 @@ def view_likes(request: HttpRequest):
     tripID = decoded_body["tripID"]
     trip = trips.find_one({"tripID": tripID})
     if trip == None:
-        return
+        return HttpResponseForbidden()
     likes = trip.get('likes', [])
     response = {
         "likes": likes
@@ -49,13 +50,13 @@ def delete_like(request: HttpRequest):
     if user != None:
         username = user['username']
     if username == 'NULL': 
-        return
+        return HttpResponseForbidden()
     
     decoded_body = json.loads(request.body.decode())
     tripID = decoded_body["tripID"]
     trip = trips.find_one({"tripID": tripID})
     if trip == None:
-        return
+        return HttpResponseForbidden()
     
     likes = trip.get('likes', [])
     likes_copy = likes.copy()
@@ -86,13 +87,13 @@ def add_like(request: HttpRequest):
     if user != None:
         username = user['username']
     if username == 'NULL': 
-        return
+        return HttpResponseForbidden()
     
     decoded_body = json.loads(request.body.decode())
     tripID = decoded_body["tripID"]
     trip = trips.find_one({"tripID": tripID})
     if trip == None:
-        return
+        return HttpResponseForbidden()
     
     likes = trip.get('likes', [])
     likes_copy = likes.copy()
@@ -124,7 +125,7 @@ def all_trips(request: HttpRequest):
     if user != None:
         username = user['username']
     if username == 'NULL':
-        return
+        return HttpResponseForbidden()
     
     trips_cursor = trips.find({})
     trips_list = []
@@ -159,7 +160,7 @@ def index_trips(request: HttpRequest):
     if user != None:
         username = user['username']
     if username == 'NULL':
-        return #RETURN SOMETHING HERE NOT SURE WHAT YET
+        return HttpResponseForbidden()
     
     tripscontext = trips.find({'username': username})
     context = {
@@ -185,7 +186,7 @@ def add_trip(request: HttpRequest):
     if user != None:
         username = user['username']
     if username == 'NULL': 
-        return #RETURN REDIRECT MAYBE OR SOMETHING NOT SURE 
+        return HttpResponseForbidden()
     decoded_body = json.loads(request.body.decode())
     #print("\n\n **** decoded body start *****\n")
     #print(decoded_body, flush=True)
@@ -194,10 +195,10 @@ def add_trip(request: HttpRequest):
     # rbody = rbody.decode()
     tripname = html.escape(decoded_body["tripName"])
     if tripname == '':
-        return
+        return HttpResponseForbidden()
     destination = html.escape(decoded_body["tripDestination"])
     if destination == '':
-        return
+        return HttpResponseForbidden()
     trip = {'username': username, 'tripname': tripname, 'destination': destination, 'tripID': str(uuid.uuid1())}
     trips.insert_one(trip)
     
