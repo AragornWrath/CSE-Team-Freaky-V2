@@ -14,6 +14,8 @@ from django.core.exceptions import ObjectDoesNotExist
 import json
 import logging
 import uuid
+import html
+
 
 db = MongoClient("mongo")
 collection = db['users']
@@ -175,8 +177,8 @@ def add_trip(request: HttpRequest):
     #print("\n **** decoded body end *****\n\n", flush=True)
 
     # rbody = rbody.decode()
-    tripname = decoded_body["tripName"]
-    destination = decoded_body["tripDestination"]
+    tripname = html.escape(decoded_body["tripName"])
+    destination = html.escape(decoded_body["tripDestination"])
     trip = {'username': username, 'tripname': tripname, 'destination': destination, 'tripID': str(uuid.uuid1())}
     trips.insert_one(trip)
     
@@ -193,8 +195,6 @@ def add_trip(request: HttpRequest):
 
     return JsonResponse(response)
 
-#TODO: GET PUBLIC TRIPS IN INDEX
-#DISPLAY THEM AT THE BOTTOM OF THE WEBSITE FOR ALL USERS TO SEE
 def index(request: HttpRequest):
     context = {
         'logged_out' : True
@@ -219,8 +219,8 @@ def register(request: HttpRequest):
         body = request.body
         print(body)
         body = body.split(b'&')         #Assuming the body is urlencoded
-        username = body[1].split(b'=')[1].decode()
-        password = body[2].split(b'=')[1].decode()
+        username = html.escape(body[1].split(b'=')[1].decode())
+        password = html.escape(body[2].split(b'=')[1].decode())
         query = {'username' : username}
         newAcc = accounts.find_one(query)
 
@@ -251,8 +251,8 @@ def login(request: HttpRequest):
         #print(request)
         body = request.body
         body = body.split(b'&')                             #Assuming the body is urlencoded
-        username = body[1].split(b'=')[1].decode()
-        password = body[2].split(b'=')[1].decode()
+        username = html.escape(body[1].split(b'=')[1].decode())
+        password = html.escape(body[2].split(b'=')[1].decode())
         if username == "" or password == "" :
             return invalidLogin()
         entry = accounts.find_one({'username': username})
