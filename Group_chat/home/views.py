@@ -23,6 +23,43 @@ trips = collection['trips']
 
 # Create your views here.
 
+def delete_like(request: HttpRequest):
+    token = 'NULL'
+    if ('token' in request.COOKIES) :
+        token = request.COOKIES['token']
+    user = findUser(token)
+
+    username = 'NULL'
+    if user != None:
+        username = user['username']
+    if username == 'NULL': 
+        return
+    
+    decoded_body = json.loads(request.body.decode())
+    tripID = decoded_body["tripID"]
+    trip = trips.find_one({"tripID": tripID})
+    if trip == None:
+        return
+    
+    likes = trip.get('likes', [])
+    likes_copy = likes.copy()
+    trip_copy = trip.copy()
+    if username in likes:
+        likes_copy.remove(username)
+    trip_copy["likes"] = likes_copy
+
+    # updates = {'$set' : {'likes' : likes}}
+    trips.replace_one(trip, trip_copy)
+
+    trip_copy.pop("_id")
+    
+    response = {
+        "likes": likes_copy
+    }
+    return JsonResponse(response)
+    
+
+
 def add_like(request: HttpRequest):
     token = 'NULL'
     if ('token' in request.COOKIES) :
@@ -54,7 +91,7 @@ def add_like(request: HttpRequest):
     trip_copy.pop("_id")
     
     response = {
-        "trip": trip_copy
+        "likes": likes_copy
     }
 
     return JsonResponse(response)

@@ -29,7 +29,7 @@ function addLike(tripID){
     const request = new XMLHttpRequest();
     request.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
-            updateLike(this.response, tripID);
+            updateLikes(this.response, tripID);
             console.log(this.response);
         }
     }
@@ -40,8 +40,12 @@ function addLike(tripID){
     request.send(JSON.stringify(likeJSON));
 }
 
-function updateLike(response, tirpID){  
-    return
+function updateLikes(response, tripID){  
+    parsed_response = JSON.parse(response);
+    likes_list = parsed_response["likes"]
+    numberOfLikes = likes_list.length;
+    likes = document.getElementById("number-of-likes_" + tripID);
+    likes.innerHTML = numberOfLikes;
 }
 
 function deleteLike(tripID){
@@ -49,7 +53,7 @@ function deleteLike(tripID){
 
     request.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
-            updateLike(this.response, tripID);
+            updateLikes(this.response, tripID);
             console.log(this.response);
         }
     }
