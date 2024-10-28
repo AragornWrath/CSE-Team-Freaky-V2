@@ -114,14 +114,29 @@ def add_like(request: HttpRequest):
 
 
 def all_trips(request: HttpRequest):
+    token = 'NULL'
+    if ('token' in request.COOKIES) :
+        token = request.COOKIES['token']
+    user = findUser(token)
+
+    #If users auth token is not found in the db -> invalid request
+    username = 'NULL'
+    if user != None:
+        username = user['username']
+    if username == 'NULL':
+        return
+    
     trips_cursor = trips.find({})
     trips_list = []
     for trip in trips_cursor:
         trip.pop("_id")
         trips_list.append(trip)
     context = {
-        "trips": trips_list
+        "trips": trips_list,
+        "username": username
     }
+    print("***** ALL TRIPS *****")
+    print(context, flush=True)
     return render(request, "all_trips.html", context)
 
 #TODO: GET USERNAME 
@@ -272,6 +287,7 @@ def login(request: HttpRequest):
                 redirect = HttpResponseRedirect('/')
                 print('SUCCESS')
                 redirect.set_cookie('token', token, httponly=True)
+                redirect.set_cookie('username', username, httponly=True)
                 return redirect
             else:
                 return invalidLogin()

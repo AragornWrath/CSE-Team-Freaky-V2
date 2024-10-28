@@ -16,11 +16,25 @@ def tripUsername(trip):
 
 @register.simple_tag
 def tripLikes(trip):
-    numberOfLikes = trip.get("likes", 0)
-    if numberOfLikes == 0:
-        return 0
+    numberOfLikes = trip.get("likes", [])
     return len(numberOfLikes)
 
 @register.simple_tag
 def tripID(trip):
     return trip.get("tripID", "none")
+
+@register.simple_tag
+def checkLikeStatus(trip, username):
+    likers = trip.get("likes", [])
+    if username in likers:
+        return "clicked"
+    else:
+        return "unclicked"
+
+@register.simple_tag
+def checkLikeStatusIcon(trip, username):
+    likers = trip.get("likes", [])
+    if username in likers:
+        return "/static/home/icons/red_heart.svg"
+    else:
+        return "/static/home/icons/empty_heart.svg"

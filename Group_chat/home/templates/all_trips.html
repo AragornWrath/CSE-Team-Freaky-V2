@@ -33,8 +33,8 @@
                 <b class="trip-destination">{% tripDestination trip%}</b>
                 <b class="username">user: {% tripUsername trip%}</b>
                 <div class="likes">
-                    <button id="likeButton_{% tripID trip%}" class="like-button-unclicked" onclick="likeButton( '{% tripID trip%}' )">
-                        <img id="likeButtonImage"class="like-button-unclicked-image" src="{% static 'home/icons/empty_heart.svg' %}">
+                    <button id="likeButton_{% tripID trip%}" class="like-button-{% checkLikeStatus trip username%}" onclick="likeButton( '{% tripID trip%}' )">
+                        <img id="likeButtonImage"class="like-button-unclicked-image" src="{% checkLikeStatusIcon trip username%}">
                     </button>
                     <button id="number-of-likes_{% tripID trip%}" class="number-of-likes" onclick="viewLikes( '{% tripID trip%}' )">{% tripLikes trip %}</button>
                 </div>
