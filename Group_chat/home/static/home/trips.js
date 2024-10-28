@@ -49,17 +49,17 @@ function addTrip(){
 //When adding a trip use "afterbegin" so that way the add trip button is pushed to the end
 function addTripToHTML(response){
     const trips = document.getElementById("tripsTable");
-    const parsed_response = JSON.parse(response)
-    const trips_list = parsed_response["trips"]
+    const parsed_response = JSON.parse(response);
+    const trips_list = parsed_response["trips"];
     for (let trip of trips_list){
-        const tripName = trip["tripname"]
-        const tripDestination = trip["destination"]
-        trips.insertAdjacentHTML("afterbegin", createTripHTML(tripName, tripDestination))
+        const tripName = trip["tripname"];
+        const tripDestination = trip["destination"];
+        trips.insertAdjacentHTML("afterbegin", createTripHTML(tripName, tripDestination));
     }
 }
 
 function createTripHTML(tripName, tripDestination){
-    let html = '<div class="trip"> <div class="trip-header"> <b class="trip-title">' + tripName + '</b> </div> <b class="trip-destination">' + tripDestination + '</b> </div>'
+    let html = '<div class="trip"> <div class="trip-header"> <b class="trip-title">' + tripName + '</b> </div> <b class="trip-destination">' + tripDestination + '</b> </div>';
     return html
 }
 

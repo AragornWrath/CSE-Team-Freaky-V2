@@ -12,8 +12,8 @@ from django.views.generic import ListView
 from .models import TripItem
 from django.core.exceptions import ObjectDoesNotExist
 import json
-
 import logging
+import uuid
 
 db = MongoClient("mongo")
 collection = db['users']
@@ -22,6 +22,43 @@ trips = collection['trips']
 #{'username': username, 'tripname': tripname, 'date': date}
 
 # Create your views here.
+
+def add_like(request: HttpRequest):
+    token = 'NULL'
+    if ('token' in request.COOKIES) :
+        token = request.COOKIES['token']
+    user = findUser(token)
+
+    username = 'NULL'
+    if user != None:
+        username = user['username']
+    if username == 'NULL': 
+        return
+    
+    decoded_body = json.loads(request.body.decode())
+    tripID = decoded_body["tripID"]
+    trip = trips.find_one({"tripID": tripID})
+    if trip == None:
+        return
+    
+    likes = trip.get('likes', [])
+    likes_copy = likes.copy()
+    trip_copy = trip.copy()
+    if username not in likes:
+        likes_copy.append(username)
+    trip_copy["likes"] = likes_copy
+
+    # updates = {'$set' : {'likes' : likes}}
+    trips.replace_one(trip, trip_copy)
+
+    trip_copy.pop("_id")
+    
+    response = {
+        "trip": trip_copy
+    }
+
+    return JsonResponse(response)
+
 
 def all_trips(request: HttpRequest):
     trips_cursor = trips.find({})
@@ -89,7 +126,7 @@ def add_trip(request: HttpRequest):
     # rbody = rbody.decode()
     tripname = decoded_body["tripName"]
     destination = decoded_body["tripDestination"]
-    trip = {'username': username, 'tripname': tripname, 'destination': destination}
+    trip = {'username': username, 'tripname': tripname, 'destination': destination, 'tripID': str(uuid.uuid1())}
     trips.insert_one(trip)
     
     # tripscontext = trips.find_one({'username': username})
@@ -99,7 +136,6 @@ def add_trip(request: HttpRequest):
     #     l.append(i)
 
     trip.pop("_id")
-
     response = {
         "trips": [trip]
     }

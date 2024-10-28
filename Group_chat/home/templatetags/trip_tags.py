@@ -18,4 +18,11 @@ def tripUsername(trip):
 
 @register.simple_tag
 def tripLikes(trip):
-    return trip.get("likes", 0)
+    numberOfLikes = trip.get("likes", 0)
+    if numberOfLikes == 0:
+        return 0
+    return len(numberOfLikes)
+
+@register.simple_tag
+def tripID(trip):
+    return trip.get("tripID", "none")

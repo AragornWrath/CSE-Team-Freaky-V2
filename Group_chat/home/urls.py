@@ -13,4 +13,6 @@ urlpatterns = [
     path('serveLoginFailed/login/', views.login, name='login'),
     path('trips/add-trip/', views.add_trip, name='addTrip'),
     path('all_trips/', views.all_trips, name='allTrips'),
+    path('all_trips/add-like', views.add_like, name="addLike"),
+    #path('all_trips/delete-like', views.delete_like, name="deleteLike"),
 ]

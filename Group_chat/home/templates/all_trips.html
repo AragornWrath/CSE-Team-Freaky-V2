@@ -7,6 +7,7 @@
         <script src="{% static 'home/all_trips.js' %}"></script>
     </head>
     <body>
+        {% csrf_token %}
         <div class="header">
             <h1 class="title">Travel Collection</h1>
             <button class="account-button" onclick="dropdown()">
@@ -31,7 +32,7 @@
                 <b class="trip-destination">{% tripDestination trip%}</b>
                 <b class="username">user: {% tripUsername trip%}</b>
                 <div class="likes">
-                    <button id="likeButton" class="like-button-unclicked" onclick="likeButton()">
+                    <button id="likeButton_{% tripID trip%}" class="like-button-unclicked" onclick="likeButton( '{% tripID trip%}' )">
                         <img id="likeButtonImage"class="like-button-unclicked-image" src="{% static 'home/icons/empty_heart.svg' %}">
                     </button>
                     <button class="number-of-likes" onclick="viewLikes()">{% tripLikes trip %}</button>
