@@ -193,7 +193,11 @@ def add_trip(request: HttpRequest):
 
     # rbody = rbody.decode()
     tripname = html.escape(decoded_body["tripName"])
+    if tripname == '':
+        return
     destination = html.escape(decoded_body["tripDestination"])
+    if destination == '':
+        return
     trip = {'username': username, 'tripname': tripname, 'destination': destination, 'tripID': str(uuid.uuid1())}
     trips.insert_one(trip)
     
