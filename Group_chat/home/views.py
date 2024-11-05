@@ -311,11 +311,12 @@ def invalidRegister() :
     return redirect
 
 def logout (request: HttpRequest) :
-    if request.method == 'POST' and 'token' in request.COOKIES:
-        user = findUser(request.COOKIES['token'])
-        if user != None :
-            updates = {'$set' : {'token' : None}}
-            accounts.update_one(user, updates)
+    
+    token = request.COOKIES['token']
+    user = findUser(token)
+    if user != None :
+        updates = {'$set' : {'token' : None}}
+        accounts.update_one(user, updates)
     redirect = HttpResponseRedirect('/')
     if 'token' in request.COOKIES :
         redirect.delete_cookie('token')
