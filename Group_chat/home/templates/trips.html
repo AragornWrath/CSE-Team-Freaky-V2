@@ -34,6 +34,9 @@
                 </div>
                 {% load trip_tags %}
                 <b class="trip-destination">{% tripDestination trip %}</b>
+                <form action="/media-uploads" method="post" enctype="multipart/form-data">
+                    <button class="add-trip-button" onclick="addTripPictures()">Add Trip Pictures!</button>
+                </form>
             </div>
             {% endfor %}
             <div id="addTripCard" class="dropdown-hidden">
