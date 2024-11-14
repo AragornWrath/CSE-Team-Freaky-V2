@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpRequest, HttpResponseRedirect, HttpRes
 from django.template import loader, RequestContext
 from pymongo import MongoClient
 from bcrypt import hashpw, gensalt
-from home.generateToken import generateToken
+from home.generateToken import generateToken, generateImageToken
 import hashlib
 from .models import userModel
 from django.http import JsonResponse
@@ -329,6 +329,17 @@ def findUser(token) :
     if account != None :
         return account
     return None
+
+def uploadImage(request: HttpRequest) :
+    #   Outline
+    #
+    #   Take the image as a request, Create a new file 
+    #   and save it to whatever folder you may create
+    #   that persists data :)
+    imageType = request.content_type
+    imageID = generateImageToken(20)
+
+    
 
 def index2(request: HttpRequest):
     return render(request, "index2.html")

@@ -9,3 +9,11 @@ def generateToken(length) :
         val += random.choice(validChars)
     
     return val
+
+def generateImageToken(length) :
+    val = ""
+    validChars = string.ascii_letters + string.digits
+    for letter in range(length) :
+        val += random.choice(validChars)
+    
+    return val
