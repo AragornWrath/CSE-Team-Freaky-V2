@@ -35,7 +35,9 @@
                 {% load trip_tags %}
                 <b class="trip-destination">{% tripDestination trip %}</b>
                 <form action="/media-uploads" method="post" enctype="multipart/form-data">
-                    <button class="add-trip-button" onclick="addTripPictures()">Add Trip Pictures!</button>
+                    <label class="add-trip-label">Add Your Trip Photos!:</label>
+                    <input type="file" name="upload" class="add-trip-label">
+                    <input type="submit" value="Upload" class ="add-trip-label">
                 </form>
             </div>
             {% endfor %}
