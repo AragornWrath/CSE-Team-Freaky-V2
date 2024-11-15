@@ -30,14 +30,17 @@
                 <div class="trip-header">
                     {% load trip_tags %}
                     <b class="trip-title">{% tripName trip %}</b>
+                    <div hidden>{% tripID trip %}</div>
                     <!-- <input type="date"> -->
                 </div>
                 {% load trip_tags %}
                 <b class="trip-destination">{% tripDestination trip %}</b>
                 <form action="/media-uploads" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
                     <label class="add-trip-label">Add Your Trip Photos!:</label>
                     <input type="file" name="upload" class="add-trip-label">
                     <input type="submit" value="Upload" class ="add-trip-label">
+                    <input type="text" value="{% tripID trip%}" readonly hidden>
                 </form>
             </div>
             {% endfor %}

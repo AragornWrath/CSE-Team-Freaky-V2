@@ -16,6 +16,9 @@ import json
 import logging
 import uuid
 import html
+import os
+
+
 
 
 db = MongoClient("mongo")
@@ -336,10 +339,22 @@ def uploadImage(request: HttpRequest) :
     #   Take the image as a request, Create a new file 
     #   and save it to whatever folder you may create
     #   that persists data :)
-    imageType = request.content_type
+    imageType = request.FILES['upload'].content_type.split("/")[1]
     imageID = generateImageToken(20)
-
+    path = 'userImages/' + imageID + "." + imageType
+    image = request.FILES['upload'].read()
     
+    with open(path, 'wb') as newImage :
+        newImage.write(image)
+        newImage.close()
+    
+
+    #BUNCH OF MISSING LOGIC !!!!!
+    
+    response = HttpResponseRedirect('trips/')
+    return response
+    
+
 
 def index2(request: HttpRequest):
     return render(request, "index2.html")
