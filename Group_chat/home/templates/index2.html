@@ -7,6 +7,15 @@
         <script src="{% static 'home/menu.js' %}"></script>
     </head>
     <body>
+        <script type="text/javascript">
+            let url = 'ws://' + window.location.host + '/ws/socket-server'
+            const socket = new WebSocket(url)
+
+            socket.onmessage = function(e){
+                let data = JSON.parse(e.data)
+                console.log("Data:", data)
+            }
+        </script>
         {% csrf_token %}
         <div class="header">
             <h1 class="title">OUT OF THE GROUPCHAT</h1>
