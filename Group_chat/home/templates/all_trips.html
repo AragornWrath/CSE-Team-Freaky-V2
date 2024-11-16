@@ -6,7 +6,7 @@
         <link rel="stylesheet" type="text/css" href="{% static 'home/all_trips.css' %}"/>
         <script src="{% static 'home/all_trips.js' %}"></script>
     </head>
-    <body>
+    <body onload="welcome();">
         {% csrf_token %}
         <div class="page">
         <div class="header">

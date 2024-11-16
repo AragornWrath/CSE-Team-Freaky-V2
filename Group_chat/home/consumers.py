@@ -1,10 +1,21 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+import hashlib
+from pymongo import MongoClient
 
+db = MongoClient("mongo")
+collection = db['users']
+accounts = collection['accounts']
+trips = collection['trips']
 class LikeConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         auth_token = find_auth_token(self.scope["headers"])
         print("auth token found: ", auth_token, flush=True)
+        user = findUser(auth_token)
+        username = 'NULL'
+        if user != None:
+            username = user['username']
+        print("username: ", username, flush=True)
         await self.accept()
 
         await self.send(text_data=json.dumps({
@@ -13,6 +24,10 @@ class LikeConsumer(AsyncWebsocketConsumer):
             
         }))
 
+    async def receive(self, text_data):
+        like_data_json = json.loads(text_data)
+        print("like data: ", like_data_json, flush=True)
+#Make sure if you want to print something you use flush=True
 
 def find_auth_token(headers):
     #call with the headers from self.scope["headers"]
@@ -65,3 +80,12 @@ def model_add_likes():
     }
 
     return JsonResponse(response)
+
+
+def findUser(token) :
+    # REPLACE OR REMOVE
+    query = {'token' : hashlib.sha256(token.encode()).digest()}
+    account = accounts.find_one(query)
+    if account != None :
+        return account
+    return None
