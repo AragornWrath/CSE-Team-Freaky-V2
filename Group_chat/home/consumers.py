@@ -9,12 +9,12 @@ collection = db['users']
 accounts = collection['accounts']
 trips = collection['trips']
 class LikeConsumer(AsyncWebsocketConsumer):
-    username = 'NULL'
+    username = 'Guest'
     async def connect(self):
         auth_token = find_auth_token(self.scope["headers"])
         print("auth token found: ", auth_token, flush=True)
         user = findUser(auth_token)
-        self.username = 'NULL'
+        self.username = 'Guest'
         if user != None:
             self.username = user['username']
         print("username: ", self.username, flush=True)
@@ -81,7 +81,7 @@ def find_auth_token(headers):
 def ws_delete_likes(tripID, username):
     trip = trips.find_one({"tripID": tripID})
     if trip == None:
-        return {"likes": []}
+        return {"likes": [], "tripID": tripID}
     
     likes = trip.get('likes', [])
     likes_copy = likes.copy()
@@ -107,7 +107,7 @@ def ws_add_likes(tripID, username):
     trip = trips.find_one({"tripID": tripID})
     if trip == None:
         print("no trip found", flush=True)
-        return {"likes": []}
+        return {"likes": [], "tripID": tripID}
     
     likes = trip.get('likes', [])
     likes_copy = likes.copy()
