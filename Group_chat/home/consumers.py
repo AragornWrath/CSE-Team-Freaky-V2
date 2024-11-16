@@ -19,11 +19,11 @@ class LikeConsumer(AsyncWebsocketConsumer):
         print("username: ", self.username, flush=True)
         await self.accept()
 
-        await self.send(text_data=json.dumps({
-            'type': 'connection_established',
-            'message': 'you are now connected! :)',
+        # await self.send(text_data=json.dumps({
+        #     'type': 'connection_established',
+        #     'message': 'you are now connected! :)',
             
-        }))
+        # }))
 
     async def receive(self, text_data):
         print("instance username: ", self.username, flush=True)
@@ -71,7 +71,8 @@ def ws_add_likes(tripID, username):
     trip_copy.pop("_id")
     
     response = {
-        "likes": likes_copy
+        "likes": likes_copy,
+        "tripID": tripID
     }
     return response
 
