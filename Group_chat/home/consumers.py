@@ -2,6 +2,7 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 import hashlib
 from pymongo import MongoClient
+from asgiref.sync import async_to_sync
 
 db = MongoClient("mongo")
 collection = db['users']
@@ -17,8 +18,15 @@ class LikeConsumer(AsyncWebsocketConsumer):
         if user != None:
             self.username = user['username']
         print("username: ", self.username, flush=True)
+
+        #adding users to channel layer group to broadcast to all users
         await self.accept()
 
+        self.room_group_name = 'likes'
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name,
+        )
         # await self.send(text_data=json.dumps({
         #     'type': 'connection_established',
         #     'message': 'you are now connected! :)',
@@ -36,9 +44,22 @@ class LikeConsumer(AsyncWebsocketConsumer):
             return_like_data = ws_add_likes(tripID, self.username)
         elif like_type == "delete_like":
             return_like_data = ws_delete_likes(tripID, self.username)
-        await self.send(text_data=json.dumps(return_like_data))
+        # await self.send(text_data=json.dumps(return_like_data))
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                "type": 'send_like_data',
+                "message": json.dumps(return_like_data),
+            }
+        )
         # print("Like data sent to websocket", flush=True)
 #Make sure if you want to print something you use flush=True
+    async def send_like_data(self, event):
+        message = event["message"]
+        await self.send(text_data=message)
+        
+
+
 
 def find_auth_token(headers):
     #call with the headers from self.scope["headers"]
