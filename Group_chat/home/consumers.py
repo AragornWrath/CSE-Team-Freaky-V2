@@ -28,11 +28,16 @@ class LikeConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         print("instance username: ", self.username, flush=True)
         like_data_json = json.loads(text_data)
+        like_type = like_data_json["type"]
         tripID = like_data_json["tripID"]
-        print("like data: ", like_data_json, flush=True)
-        return_like_data = ws_add_likes(tripID, self.username)
+        # print("like data: ", like_data_json, flush=True)
+        return_like_data = None
+        if like_type == "add_like":
+            return_like_data = ws_add_likes(tripID, self.username)
+        elif like_type == "delete_like":
+            return_like_data = ws_delete_likes(tripID, self.username)
         await self.send(text_data=json.dumps(return_like_data))
-        print("Like data sent to websocket", flush=True)
+        # print("Like data sent to websocket", flush=True)
 #Make sure if you want to print something you use flush=True
 
 def find_auth_token(headers):
@@ -50,6 +55,31 @@ def find_auth_token(headers):
                         #print("token: ", token, flush=True)
                         return token
     return 'no_auth_token'
+
+
+def ws_delete_likes(tripID, username):
+    trip = trips.find_one({"tripID": tripID})
+    if trip == None:
+        return {"likes": []}
+    
+    likes = trip.get('likes', [])
+    likes_copy = likes.copy()
+    trip_copy = trip.copy()
+    if username in likes:
+        likes_copy.remove(username)
+    trip_copy["likes"] = likes_copy
+
+    # updates = {'$set' : {'likes' : likes}}
+    trips.replace_one(trip, trip_copy)
+
+    trip_copy.pop("_id")
+    
+    response = {
+        "likes": likes_copy,
+        "tripID": tripID
+    }
+    return response
+
 
 
 def ws_add_likes(tripID, username):
@@ -75,44 +105,6 @@ def ws_add_likes(tripID, username):
         "tripID": tripID
     }
     return response
-
-
-
-def model_add_likes():
-    token = 'NULL'
-    if ('token' in request.COOKIES) :
-        token = request.COOKIES['token']
-    user = findUser(token)
-
-    username = 'NULL'
-    if user != None:
-        username = user['username']
-    if username == 'NULL': 
-        return HttpResponseForbidden()
-    
-    decoded_body = json.loads(request.body.decode())
-    tripID = decoded_body["tripID"]
-    trip = trips.find_one({"tripID": tripID})
-    if trip == None:
-        return HttpResponseForbidden()
-    
-    likes = trip.get('likes', [])
-    likes_copy = likes.copy()
-    trip_copy = trip.copy()
-    if username not in likes:
-        likes_copy.append(username)
-    trip_copy["likes"] = likes_copy
-
-    # updates = {'$set' : {'likes' : likes}}
-    trips.replace_one(trip, trip_copy)
-
-    trip_copy.pop("_id")
-    
-    response = {
-        "likes": likes_copy
-    }
-
-    return JsonResponse(response)
 
 
 def findUser(token) :

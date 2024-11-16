@@ -122,10 +122,10 @@ function initWS(){
 
     socket.onmessage = function (ws_message) {
         likes_data = JSON.parse(ws_message.data)
-        console.log("likes data ->")
-        console.log(likes_data)
+        // console.log("likes data ->")
+        // console.log(likes_data)
         tripID = likes_data["tripID"]
-        console.log(JSON.parse(ws_message.data))
+        // console.log(JSON.parse(ws_message.data))
         updateLikes(ws_message.data, tripID)
     }
 }
