@@ -1,3 +1,6 @@
+const ws = true;
+let socket = null;
+
 function dropdown(){
     if (document.getElementById("dropdown").className == "dropdown-hidden"){
         document.getElementById("dropdown").className = "dropdown-show";
@@ -61,18 +64,23 @@ function closeLikes(){
 }
 
 function addLike(tripID){
-    const request = new XMLHttpRequest();
-    request.onreadystatechange = function () {
-        if (this.readyState === 4 && this.status === 200) {
-            updateLikes(this.response, tripID);
-            console.log(this.response);
+    if (ws){
+        let like = {"tripID": tripID, "type": "add_like"}
+        socket.send(JSON.stringify(like))
+    } else {
+        const request = new XMLHttpRequest();
+        request.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                updateLikes(this.response, tripID);
+                console.log(this.response);
+            }
         }
+        const likeJSON = {"tripID": tripID};
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value; 
+        request.open("POST", "add-like");
+        request.setRequestHeader("X-CSRFToken", csrftoken)
+        request.send(JSON.stringify(likeJSON));
     }
-    const likeJSON = {"tripID": tripID};
-    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value; 
-    request.open("POST", "add-like");
-    request.setRequestHeader("X-CSRFToken", csrftoken)
-    request.send(JSON.stringify(likeJSON));
 }
 
 function updateLikes(response, tripID){  
@@ -84,17 +92,40 @@ function updateLikes(response, tripID){
 }
 
 function deleteLike(tripID){
-    const request = new XMLHttpRequest();
+    if (ws) {
+        let hate = {"tripID": tripID, "type": "delete_like"}
+        socket.send(JSON.stringify(hate))
+    } else {
+        const request = new XMLHttpRequest();
 
-    request.onreadystatechange = function () {
-        if (this.readyState === 4 && this.status === 200) {
-            updateLikes(this.response, tripID);
-            console.log(this.response);
+        request.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                updateLikes(this.response, tripID);
+                console.log(this.response);
+            }
         }
+        const likeJSON = {"tripID": tripID};
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value; 
+        request.open("POST", "delete-like");
+        request.setRequestHeader("X-CSRFToken", csrftoken)
+        request.send(JSON.stringify(likeJSON));
     }
-    const likeJSON = {"tripID": tripID};
-    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value; 
-    request.open("POST", "delete-like");
-    request.setRequestHeader("X-CSRFToken", csrftoken)
-    request.send(JSON.stringify(likeJSON));
+}
+
+function welcome() {
+    initWS();
+}
+
+function initWS(){
+    let url = 'ws://' + window.location.host + '/all_trips/websocket'
+    socket = new WebSocket(url)
+
+    socket.onmessage = function (ws_message) {
+        likes_data = JSON.parse(ws_message.data)
+        // console.log("likes data ->")
+        // console.log(likes_data)
+        tripID = likes_data["tripID"]
+        // console.log(JSON.parse(ws_message.data))
+        updateLikes(ws_message.data, tripID)
+    }
 }
