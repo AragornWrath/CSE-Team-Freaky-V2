@@ -1,3 +1,4 @@
+import os
 from django.shortcuts import render
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect, HttpResponseNotFound
 from django.template import loader, RequestContext
@@ -17,14 +18,16 @@ import logging
 import uuid
 import html
 import os
-
-
+from PIL import Image
+from PIL import ImageFile
+from io import BytesIO
 
 
 db = MongoClient("mongo")
 collection = db['users']
 accounts = collection['accounts']
 trips = collection['trips']
+pictures = collection['pictures']
 #{'username': username, 'tripname': tripname, 'date': date}
 
 # Create your views here.
@@ -339,22 +342,58 @@ def uploadImage(request: HttpRequest) :
     #   Take the image as a request, Create a new file 
     #   and save it to whatever folder you may create
     #   that persists data :)
-    imageType = request.FILES['upload'].content_type.split("/")[1]
-    imageID = generateImageToken(20)
-    path = 'userImages/' + imageID + "." + imageType
-    image = request.FILES['upload'].read()
-    
-    with open(path, 'wb') as newImage :
-        newImage.write(image)
-        newImage.close()
-    
+    cur_path = os.path.realpath(__file__)
+    dir = os.path.dirname(cur_path)
+    dir = dir.replace('util', 'public')
+    print(request.FILES, flush= True)
+    print("CONTENT TYPE IS: ", request.content_type, flush= True)
 
-    #BUNCH OF MISSING LOGIC !!!!!
+    imageType = request.FILES['upload'].content_type.split("/")[1]
+    print('IMAGE TYPE IS: ', imageType, flush=True)
+    imageID = generateImageToken(20)
+    path = dir + '/userImages/' + imageID + "." + imageType
+    image = request.FILES['upload'].read()
+
+    image_display= ""
+    # save file on disk
+    with open(path, 'wb') as newImage :
+        width_and_height= resize_this_image(image,path)
+        image_display=message_image(path, width_and_height[0], width_and_height[1])
+        # newImage.write(image)
+        newImage.close()
+        # resize the image
     
+    uploaded_image= open(path, "rb").read()
+    photo = {'imageID': imageID, 'path': path, 'image': uploaded_image}
+    pictures.insert_one(photo)
+
+    #Instead of redirecting back to home page find a way to call updateMessages()
     response = HttpResponseRedirect('trips/')
     return response
     
+def resize_this_image(image_bytes, path):
+    im = Image.open(BytesIO(image_bytes))
+    width, height = im.size
 
+    new_width = 0
+    new_height = 0
+
+    if width > height:
+        new_width += 240
+        ratio = 240/width
+        new_height += height*ratio
+    else:
+        new_height += 240
+        ratio = 240/height
+        new_width += width*ratio
+
+    im = im.resize((int(new_width), int(new_height)))
+    im.save(path)
+
+    return tuple((int(new_width), int(new_height)))
+
+def message_image(path,width, height):
+    return f'<img src="{path}"alt="alternative description" width={width} height={height}/>'
 
 def index2(request: HttpRequest):
     return render(request, "index2.html")

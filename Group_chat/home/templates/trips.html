@@ -39,9 +39,11 @@
                     {% csrf_token %}
                     <label class="add-trip-label">Add Your Trip Photos!:</label>
                     <input type="file" name="upload" class="add-trip-label">
-                    <input type="submit" value="Upload" class ="add-trip-label">
+                    <button id="submit-photo-button" type="submit" value="Upload" class ="add-trip-label" onclick="updateGallery()">Upload</button>
                     <input type="text" value="{% tripID trip%}" readonly hidden>
                 </form>
+                <div id="Gallery" class="gallery">
+                </div>
             </div>
             {% endfor %}
             <div id="addTripCard" class="dropdown-hidden">
