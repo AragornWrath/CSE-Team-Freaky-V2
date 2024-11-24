@@ -17,5 +17,5 @@ urlpatterns = [
     path('all_trips/delete-like', views.delete_like, name="deleteLike"),
     path('all_trips/view-likes', views.view_likes, name="viewLikes"),
     path('media-uploads', views.uploadImage, name='updateGallery'),
-    
+    path('trips/<str:trip_id>',views.load_trip_by_id,name='tripByID'),
 ]

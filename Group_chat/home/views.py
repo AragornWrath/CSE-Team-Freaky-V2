@@ -343,6 +343,7 @@ def uploadImage(request: HttpRequest) :
     #   and save it to whatever folder you may create
     #   that persists data :)
     cur_path = os.path.realpath(__file__)
+    #   This breaks the image upload at the moment, not sure why.
     dir = os.path.dirname(cur_path)
     dir = dir.replace('util', 'public')
     print(request.FILES, flush= True)
@@ -370,7 +371,23 @@ def uploadImage(request: HttpRequest) :
     #Instead of redirecting back to home page find a way to call updateMessages()
     response = HttpResponseRedirect('trips/')
     return response
-    
+
+def load_trip_by_id(request,trip_id):
+    # Generates a new page for each individual trip.
+
+    #Unfinished.
+    currTrips = trips.find_one({'tripID' : trip_id})
+
+    if currTrips == None:
+        return HttpResponseNotFound
+    else :
+        newContext = {'creator' : currTrips['username'], 'tripID': currTrips['tripID'], 'destination' : currTrips['destination']}
+        #response = HttpResponseRedirect('newTrip.html')
+        #response.context = newContext
+        
+        return render(request,'newTrip.html', newContext)
+
+
 def resize_this_image(image_bytes, path):
     im = Image.open(BytesIO(image_bytes))
     width, height = im.size
