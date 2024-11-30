@@ -169,9 +169,12 @@ def index_trips(request: HttpRequest):
         return HttpResponseForbidden()
     
     tripscontext = trips.find({'username': username})
+
     context = {
-        'trips' : tripscontext
+        'trips' : tripscontext,
     }
+
+
     return render(request, 'trips.html', context)
 
 def add_trip(request: HttpRequest):
@@ -336,7 +339,9 @@ def findUser(token) :
         return account
     return None
 
-def uploadImage(request: HttpRequest) :
+def uploadImage(request: HttpRequest, trip_id) :
+    print("***trip_id***")
+    print(trip_id, flush=True)
     #   Outline
     #
     #   Take the image as a request, Create a new file 
@@ -345,16 +350,24 @@ def uploadImage(request: HttpRequest) :
 
     cur_path = os.path.realpath(__file__)
     #   This breaks the image upload at the moment, not sure why.
-    dir = os.path.dirname(cur_path)
-    dir = dir.replace('util', 'public')
+    # dir = os.path.dirname(cur_path)
+    # dir = dir.replace('util', 'public')
+    dir = "/root/home/static/home/userImages/"
     print(request.FILES, flush= True)
     print("CONTENT TYPE IS: ", request.content_type, flush= True)
 
-    imageType = request.FILES['upload'].content_type.split("/")[1]
+    imageType = request.FILES.get('upload', None)
+    if imageType == None:
+        return HttpResponseRedirect('/trips/')
+    
+    imageType = imageType.content_type.split("/")[1]
     print('IMAGE TYPE IS: ', imageType, flush=True)
     imageID = generateImageToken(20)
-    path = 'userImages/' + imageID + "." + imageType
-    image = request.FILES['upload'].read()
+    path = dir + imageID + "." + imageType
+    image = request.FILES.get('upload', None)
+    if image == None:
+        return HttpResponseRedirect('/trips/')
+    image = image.read()
 
     image_display= ""
     # save file on disk
@@ -366,12 +379,31 @@ def uploadImage(request: HttpRequest) :
         # resize the image
     
     uploaded_image= open(path, "rb").read()
+    path = 'home/userImages/' + imageID + '.' + imageType
     photo = {'imageID': imageID, 'path': path, 'image': uploaded_image}
     pictures.insert_one(photo)
 
+
     #Instead of redirecting back to home page find a way to call updateMessages()
-    response = HttpResponseRedirect('trips/')
+    
+    response = HttpResponseRedirect('/trips/')
+
+    trip = trips.find_one({"tripID": trip_id})
+    if trip == None:
+        return response
+    
+    tripCopy = trip.copy()
+    imagePaths = trip.get("imagePaths", [])
+    imagePathsCopy = imagePaths.copy()
+    imagePathsCopy.append(path)
+    tripCopy["imagePaths"] = imagePathsCopy
+    trips.replace_one(trip, tripCopy)
+
     return response
+
+# def serveMedia(request: HttpRequest, trip_id):
+    
+#     return 
 
 def load_trip_by_id(request,trip_id):
     # Generates a new page for each individual trip.

@@ -38,3 +38,8 @@ def checkLikeStatusIcon(trip, username):
         return "/static/home/icons/red_heart.svg"
     else:
         return "/static/home/icons/empty_heart.svg"
+    
+
+@register.simple_tag
+def getImagePaths(trip):
+    return trip.get("imagePaths", [])

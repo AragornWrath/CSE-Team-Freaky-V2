@@ -35,7 +35,7 @@
                 </div>
                 {% load trip_tags %}
                 <b class="trip-destination">{% tripDestination trip %}</b>
-                <form action="/media-uploads" method="post" enctype="multipart/form-data">
+                <form action="/media-uploads/{% tripID trip %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <label class="add-trip-label">Add Your Trip Photos!:</label>
                     <input type="file" name="upload" class="add-trip-label">
@@ -44,6 +44,10 @@
                     <a href="/trips/{% tripID trip %}">Go To Trip Page</a>
                 </form>
                 <div id="Gallery" class="gallery">
+                        {% getImagePaths trip as imagePaths %}
+                        {% for imagePath in imagePaths %}
+                        <img width='100' class="photo" src="{% static imagePath %}" >
+                        {% endfor %}
                 </div>
             </div>
             {% endfor %}

@@ -59,6 +59,12 @@ function addTripToHTML(response){
     }
 }
 
+function createTripHTML(tripName, tripDestination){
+    let html = '<div class="trip"> <div class="trip-header"> <b class="trip-title">' + tripName + '</b> </div> <b class="trip-destination">' + tripDestination + '</b>  </div>';
+    return html;
+}
+
+
 function updateGallery(){
     const request = new XMLHttpRequest();
     request.onreadystatechange = function () {
