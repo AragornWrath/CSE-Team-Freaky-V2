@@ -174,7 +174,7 @@ def index_trips(request: HttpRequest):
         'trips' : tripscontext,
     }
 
-    
+
     return render(request, 'trips.html', context)
 
 def add_trip(request: HttpRequest):
@@ -349,15 +349,16 @@ def uploadImage(request: HttpRequest, trip_id) :
     #   that persists data :)
     cur_path = os.path.realpath(__file__)
     #   This breaks the image upload at the moment, not sure why.
-    dir = os.path.dirname(cur_path)
-    dir = dir.replace('util', 'public')
+    # dir = os.path.dirname(cur_path)
+    # dir = dir.replace('util', 'public')
+    dir = "/root/home/static/userImages/"
     print(request.FILES, flush= True)
     print("CONTENT TYPE IS: ", request.content_type, flush= True)
 
     imageType = request.FILES['upload'].content_type.split("/")[1]
     print('IMAGE TYPE IS: ', imageType, flush=True)
     imageID = generateImageToken(20)
-    path = dir + '/userImages/' + imageID + "." + imageType
+    path = dir + imageID + "." + imageType
     image = request.FILES['upload'].read()
 
     image_display= ""
@@ -391,11 +392,9 @@ def uploadImage(request: HttpRequest, trip_id) :
 
     return response
 
-def serveMedia(request: HttpRequest):
-    print("\n**** REQUEST IS: *****\n\n", flush=True)
-    print(request, flush=True)
-    print ("\n\n****REQUEST END****\n", flush=True)
-    pass
+# def serveMedia(request: HttpRequest, trip_id):
+    
+#     return 
 
 def load_trip_by_id(request,trip_id):
     # Generates a new page for each individual trip.
