@@ -169,9 +169,12 @@ def index_trips(request: HttpRequest):
         return HttpResponseForbidden()
     
     tripscontext = trips.find({'username': username})
+
     context = {
-        'trips' : tripscontext
+        'trips' : tripscontext,
     }
+
+    
     return render(request, 'trips.html', context)
 
 def add_trip(request: HttpRequest):
@@ -336,7 +339,9 @@ def findUser(token) :
         return account
     return None
 
-def uploadImage(request: HttpRequest) :
+def uploadImage(request: HttpRequest, trip_id) :
+    print("***trip_id***")
+    print(trip_id, flush=True)
     #   Outline
     #
     #   Take the image as a request, Create a new file 
@@ -368,9 +373,29 @@ def uploadImage(request: HttpRequest) :
     photo = {'imageID': imageID, 'path': path, 'image': uploaded_image}
     pictures.insert_one(photo)
 
+
     #Instead of redirecting back to home page find a way to call updateMessages()
-    response = HttpResponseRedirect('trips/')
+    
+    response = HttpResponseRedirect('/trips/')
+
+    trip = trips.find_one({"tripID": trip_id})
+    if trip == None:
+        return response
+    
+    tripCopy = trip.copy()
+    imagePaths = trip.get("imagePaths", [])
+    imagePathsCopy = imagePaths.copy()
+    imagePathsCopy.append(path)
+    tripCopy["imagePaths"] = imagePathsCopy
+    trips.replace_one(trip, tripCopy)
+
     return response
+
+def serveMedia(request: HttpRequest):
+    print("\n**** REQUEST IS: *****\n\n", flush=True)
+    print(request, flush=True)
+    print ("\n\n****REQUEST END****\n", flush=True)
+    pass
 
 def load_trip_by_id(request,trip_id):
     # Generates a new page for each individual trip.
