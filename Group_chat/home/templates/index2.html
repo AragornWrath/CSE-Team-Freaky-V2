@@ -61,12 +61,19 @@
         </div>
         <div class="chat">
             <h>SCHEME WITH FRIENDS:</h>
+
+            <div id="chat-messages">
+                {% load trip_tags %}
+                {% for message in messages %}
+                    <div><b>{%getUsername message%}: {%getMessage message%}</b></div>
+                {% endfor %}
+            </div>
+
             <div class="chat-form">
                 {% csrf_token %}
                 <hr>
                 <label>
                     Chat:
-                    <input name="xsrf_token" hidden id="xsrf_token">
                     <input id="chat-text-box" type="text">
                 </label>
                 <button id="chat-button" onclick="sendChat()">Send</button>

@@ -23,6 +23,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Group_chat.settings')
 application = ProtocolTypeRouter({
     'http': get_asgi_application(),
     'websocket': AuthMiddlewareStack(
-        URLRouter([re_path(r'all_trips/websocket', consumers.LikeConsumer.as_asgi()),])
+        URLRouter([re_path(r'all_trips/websocket', consumers.LikeConsumer.as_asgi()),
+                   re_path(r'scheme', consumers.SchemeConsumer.as_asgi()),])
     )
 })
