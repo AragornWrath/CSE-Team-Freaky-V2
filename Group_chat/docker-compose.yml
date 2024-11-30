@@ -9,7 +9,5 @@ services:
         target: /root/db.sqlite3
   mongo:
     image: mongo:4.2.5
-    ports:
-      - '27017:27017'
 volumes:
   user-data:
