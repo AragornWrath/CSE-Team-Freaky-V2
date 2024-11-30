@@ -351,15 +351,22 @@ def uploadImage(request: HttpRequest, trip_id) :
     #   This breaks the image upload at the moment, not sure why.
     # dir = os.path.dirname(cur_path)
     # dir = dir.replace('util', 'public')
-    dir = "/root/home/static/userImages/"
+    dir = "/root/home/static/home/userImages/"
     print(request.FILES, flush= True)
     print("CONTENT TYPE IS: ", request.content_type, flush= True)
 
-    imageType = request.FILES['upload'].content_type.split("/")[1]
+    imageType = request.FILES.get('upload', None)
+    if imageType == None:
+        return HttpResponseRedirect('/trips/')
+    
+    imageType = imageType.content_type.split("/")[1]
     print('IMAGE TYPE IS: ', imageType, flush=True)
     imageID = generateImageToken(20)
     path = dir + imageID + "." + imageType
-    image = request.FILES['upload'].read()
+    image = request.FILES.get('upload', None)
+    if image == None:
+        return HttpResponseRedirect('/trips/')
+    image = image.read()
 
     image_display= ""
     # save file on disk
@@ -371,6 +378,7 @@ def uploadImage(request: HttpRequest, trip_id) :
         # resize the image
     
     uploaded_image= open(path, "rb").read()
+    path = 'home/userImages/' + imageID + '.' + imageType
     photo = {'imageID': imageID, 'path': path, 'image': uploaded_image}
     pictures.insert_one(photo)
 

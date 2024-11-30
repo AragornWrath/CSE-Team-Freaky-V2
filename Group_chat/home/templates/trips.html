@@ -46,7 +46,7 @@
                 <div id="Gallery" class="gallery">
                         {% getImagePaths trip as imagePaths %}
                         {% for imagePath in imagePaths %}
-                        <img class="photo" src="{{imagePath}}">
+                        <img width='100' class="photo" src="{% static imagePath %}" >
                         {% endfor %}
                 </div>
             </div>
