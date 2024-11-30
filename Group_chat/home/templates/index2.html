@@ -6,16 +6,7 @@
         <link rel="stylesheet" type="text/css" href="{% static 'home/home2.css' %}"/>
         <script src="{% static 'home/menu.js' %}"></script>
     </head>
-    <body>
-        <!-- <script type="text/javascript">
-            let url = 'ws://' + window.location.host + '/ws/socket-server'
-            const socket = new WebSocket(url)
-
-            socket.onmessage = function(e){
-                let data = JSON.parse(e.data)
-                console.log("Data:", data)
-            }
-        </script> -->
+    <body onload="welcome();">
         {% csrf_token %}
         <div class="header">
             <h1 class="title">OUT OF THE GROUPCHAT</h1>
@@ -68,8 +59,18 @@
         <div class="footer">
             <b class="slogan">Stop Dreaming -> Get Scheming</b>
         </div>
-        <div>
-            Hello!
+        <div class="chat">
+            <h>SCHEME WITH FRIENDS:</h>
+            <div class="chat-form">
+                {% csrf_token %}
+                <hr>
+                <label>
+                    Chat:
+                    <input name="xsrf_token" hidden id="xsrf_token">
+                    <input id="chat-text-box" type="text">
+                </label>
+                <button id="chat-button" onclick="sendChat()">Send</button>
+            </div>
         </div>
     </body>
 </html>
