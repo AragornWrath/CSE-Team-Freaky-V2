@@ -75,7 +75,7 @@
     display: flex;
     flex-direction: column;
     max-width: 400px;
-    height: 500px;
+    min-height: 500px;
     margin: 0px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
@@ -189,3 +189,17 @@
     cursor: pointer;
     background-color: rgb(150, 5, 5);
 }
+
+#gallery {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: auto auto auto;
+    overflow-x: auto;
+  }
+
+.photo {
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    padding: 10px;
+    font-size: 30px;
+    text-align: center;
+  }

@@ -38,6 +38,12 @@
                     </button>
                     <button id="number-of-likes_{% tripID trip%}" class="number-of-likes" onclick="viewLikes( '{% tripID trip%}' )">{% tripLikes trip %}</button>
                 </div>
+                <div id="Gallery" class="gallery">
+                    {% getImagePaths trip as imagePaths %}
+                    {% for imagePath in imagePaths %}
+                    <img width='100' class="photo" src="{% static imagePath %}" >
+                    {% endfor %}
+                </div>
             </div>
             {% endfor %}
         </div>
