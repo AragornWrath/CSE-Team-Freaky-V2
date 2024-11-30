@@ -28,6 +28,7 @@ collection = db['users']
 accounts = collection['accounts']
 trips = collection['trips']
 pictures = collection['pictures']
+messages = collection['messages']
 #{'username': username, 'tripname': tripname, 'date': date}
 
 # Create your views here.
@@ -225,8 +226,14 @@ def add_trip(request: HttpRequest):
     return JsonResponse(response)
 
 def index(request: HttpRequest):
+    messages_list = []
+    messages_cursor = messages.find({})
+    for message in messages_cursor:
+        message.pop("_id")
+        messages_list.append(message)
     context = {
-        'logged_out' : True
+        'logged_out' : True,
+        'messages': messages_list
     }
     if ('token' in request.COOKIES) :
         token = request.COOKIES['token'].encode()
