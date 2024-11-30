@@ -12,6 +12,7 @@ import os
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
+
 # import home.routing
 # home.routing.websocket_urlpatterns
 from home import consumers
@@ -20,6 +21,7 @@ from django.urls import re_path
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Group_chat.settings')
 
 application = ProtocolTypeRouter({
+    #just added "https" as the protocol here
     'http': get_asgi_application(),
     'websocket': AuthMiddlewareStack(
         URLRouter([re_path(r'all_trips/websocket', consumers.LikeConsumer.as_asgi()),])
