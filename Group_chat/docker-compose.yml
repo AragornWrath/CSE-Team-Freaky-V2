@@ -2,7 +2,7 @@ services:
   app:
     build: .
     ports:
-      - '8312:5000'
+      - '8312:8080'
     volumes:
       - type: bind
         source: ./db.sqlite3
