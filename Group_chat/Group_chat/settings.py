@@ -27,7 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -49,6 +48,21 @@ CHANNEL_LAYERS = {
         'BACKEND':'channels.layers.InMemoryChannelLayer'
     }
 }
+
+
+#! HTTPS and Secure Cookies Ensured here
+# Securing the cookies here
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+#Redirects all HTTP to HTTPS 
+SECURE_SSL_REDIRECT = True
+
+# Enabling HSTS
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
 
 
 MIDDLEWARE = [

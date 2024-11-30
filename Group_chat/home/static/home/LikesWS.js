@@ -15,7 +15,8 @@ function welcome() {
 }
 
 function initWS(){
-    let url = 'ws://' + window.location.host + '/all_trips/websocket'
+    // added the wss here
+    let url = 'wss://' + window.location.host + '/all_trips/websocket'
     const socket = new WebSocket(url)
 
     socket.onmessage = function (ws_message) {
