@@ -347,6 +347,7 @@ def uploadImage(request: HttpRequest, trip_id) :
     #   Take the image as a request, Create a new file 
     #   and save it to whatever folder you may create
     #   that persists data :)
+
     cur_path = os.path.realpath(__file__)
     #   This breaks the image upload at the moment, not sure why.
     # dir = os.path.dirname(cur_path)
@@ -413,7 +414,7 @@ def load_trip_by_id(request,trip_id):
     if currTrips == None:
         return HttpResponseNotFound
     else :
-        newContext = {'creator' : currTrips['username'], 'tripID': currTrips['tripID'], 'destination' : currTrips['destination']}
+        newContext = {'creator' : currTrips['username'], 'tripID': currTrips['tripID'], 'destination' : currTrips['destination'], 'name' : currTrips['tripname']}
         #response = HttpResponseRedirect('newTrip.html')
         #response.context = newContext
         
