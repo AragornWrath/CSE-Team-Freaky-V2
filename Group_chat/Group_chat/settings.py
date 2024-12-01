@@ -52,8 +52,8 @@ CHANNEL_LAYERS = {
 
 #! HTTPS and Secure Cookies Ensured here
 # Securing the cookies here
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
 
 # #Redirects all HTTP to HTTPS 
 # SECURE_SSL_REDIRECT = True
