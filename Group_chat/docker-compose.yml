@@ -1,32 +1,48 @@
+version: '3'
 services:
-  nginx:
-    build: ./nginx
-    ports:
-      - "80:80"
-      - "443:443"
-    depends_on:
-      - app
-    networks:
-      - app-network
-
-  app:
+redo-of-deployment
+  backend:
     build: .
-    command: gunicorn Group_chat.wsgi:application --bind 0.0.0.0:8080
-    ports:
-      - "8080:8080"
+    command: sh -c "python3 manage.py makemigrations && python3 manage.py migrate --noinput && python3 manage.py collectstatic --noinput && gunicorn --config gunicorn_config.py Group_chat.wsgi:application"
+    restart: always
+    expose:
+      - "8080"
     volumes:
-      - type: bind
-        source: ./db.sqlite3
-        target: /root/db.sqlite3
+      - ./:/app
+      - /var/www/static/:/var/www/static/
+      - /var/certbot/conf:/etc/letsencrypt/:ro
     depends_on:
       - mongo
-    networks:
-      - app-network
 
   mongo:
     image: mongo:4.2.5
-    networks:
-      - app-network
+    container_name: mongo
+    volumes:
+      - mongo-data:/data/db
+    restart: always
 
-networks:
-  app-network:
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/www/static/:/var/www/static/
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - /var/certbot/conf:/etc/letsencrypt/:ro
+      - /var/certbot/www/:/var/www/certbot/:rw
+    depends_on:
+      - backend
+
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - /var/certbot/conf:/etc/letsencrypt/:rw
+      - /var/certbot/www/:/var/www/certbot/:rw
+    entrypoint: /bin/sh -c 'trap exit TERM; while :; do sleep 2073600; done'
+    depends_on:
+      - nginx
+
+volumes:
+  mongo-data:
