@@ -77,6 +77,27 @@ function addFriend(tripID){
 }
 
 
+function addTask(tripID){
+    console.log("ADD TASK IS CALLED ON JAVASCRIPT")
+    const taskNameTextBox = document.getElementById("add-task-text-box");
+    const taskName = taskNameTextBox.value;
+    taskNameTextBox.value = "";
+
+
+    const request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) {
+            //implement this part
+            //addFriendToHTML(friendName);
+        }
+    }
+    const taskJSON = {"task": taskName};
+
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value; 
+    request.open("POST", "add-task/"+tripID);
+    request.setRequestHeader("X-CSRFToken", csrftoken)
+    request.send(JSON.stringify(taskJSON));
+}
 
 
 //When adding a trip use "afterbegin" so that way the add trip button is pushed to the end

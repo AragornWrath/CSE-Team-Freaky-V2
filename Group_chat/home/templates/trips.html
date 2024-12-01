@@ -49,6 +49,13 @@
                      {% endfor %}
                 </ul>
 
+                <b  class = "trip-destination"> Task I am responsible for...</b>
+                <input id="add-task-text-box" class="addTripTextBox" type="text">
+                <!-- <b>Date:</b> -->
+                <!-- <input class="addTripTextBox" type="date"> -->
+                <button id="add-task-button" value="Add a Task" class="add-trip-label" placeholder= "Enter a task..." onclick="addTask(document.getElementById('tripIDMAAM').textContent)">Add Task</button>
+                
+
                 <form action="/media-uploads/{% tripID trip %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <label class="add-trip-label">Add Your Trip Photos!:</label>

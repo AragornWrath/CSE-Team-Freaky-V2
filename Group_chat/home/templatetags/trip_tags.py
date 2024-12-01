@@ -47,3 +47,7 @@ def getImagePaths(trip):
 @register.simple_tag
 def getPeopleOnTheTrip(trip):
     return trip.get("peopleOnTheTrip", [])
+
+@register.simple_tag
+def getTasks(trip):
+    return trip.get("tasks", [])
