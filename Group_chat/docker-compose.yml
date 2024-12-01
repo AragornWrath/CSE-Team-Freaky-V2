@@ -1,6 +1,12 @@
 services:
+  nginx:
+    build: ./nginx
+    ports:
+      - '80:80'
+      - '443:443'
   app:
     build: .
+    command: gunicorn Group_chat.wsgi:application --bind 0.0.0.0:8080
     ports:
       - '8312:8080'
     volumes:

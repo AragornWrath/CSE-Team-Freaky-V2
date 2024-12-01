@@ -10,4 +10,4 @@ EXPOSE 8080
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.2.1/wait /wait
 RUN chmod +x /wait
 #Missing the call to run the server itself.
-CMD python3 manage.py runserver 0.0.0.0:8080
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "Group_chat.wsgi:application"]
