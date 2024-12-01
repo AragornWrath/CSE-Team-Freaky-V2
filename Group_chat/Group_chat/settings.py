@@ -26,8 +26,8 @@ SECRET_KEY = 'django-insecure-92fnp_%k)z@$9&hq60brpa@)6rblm1)i3i#_esbo4ih1tc29^^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+redo-of-deployment
 ALLOWED_HOSTS = ['localhost', 'outofthegc.com', '174.138.38.15']
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -51,6 +51,7 @@ CHANNEL_LAYERS = {
 }
 
 
+redo-of-deployment
 # #! HTTPS and Secure Cookies Ensured here
 # # Securing the cookies here
 # SESSION_COOKIE_SECURE = True

@@ -1,5 +1,6 @@
 version: '3'
 services:
+redo-of-deployment
   backend:
     build: .
     command: sh -c "python3 manage.py makemigrations && python3 manage.py migrate --noinput && python3 manage.py collectstatic --noinput && gunicorn --config gunicorn_config.py Group_chat.wsgi:application"
