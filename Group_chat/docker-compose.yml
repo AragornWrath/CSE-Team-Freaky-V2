@@ -4,6 +4,8 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    volumes:
+      - static:/root/home/static
     depends_on:
       - app
     networks:
@@ -15,9 +17,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - type: bind
-        source: ./db.sqlite3
-        target: /root/db.sqlite3
+      - static:/root/home/static
     depends_on:
       - mongo
     networks:
@@ -30,3 +30,6 @@ services:
 
 networks:
   app-network:
+
+volumes:
+  static:
