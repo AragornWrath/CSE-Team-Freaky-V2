@@ -43,3 +43,7 @@ def checkLikeStatusIcon(trip, username):
 @register.simple_tag
 def getImagePaths(trip):
     return trip.get("imagePaths", [])
+
+@register.simple_tag
+def getPeopleOnTheTrip(trip):
+    return trip.get("peopleOnTheTrip", [])

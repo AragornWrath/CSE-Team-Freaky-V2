@@ -28,6 +28,7 @@ collection = db['users']
 accounts = collection['accounts']
 trips = collection['trips']
 pictures = collection['pictures']
+messages = collection['messages']
 #{'username': username, 'tripname': tripname, 'date': date}
 
 # Create your views here.
@@ -168,7 +169,15 @@ def index_trips(request: HttpRequest):
     if username == 'NULL':
         return HttpResponseForbidden()
     
-    tripscontext = trips.find({'username': username})
+    tripscontext = list(trips.find({'username': username}))
+    print("THIS IS TRIPSCONTEXT")
+    print(tripscontext)
+    if len(tripscontext) == 0:
+        tripscontext=[]
+    secondhand_trips=list(trips.find({'peopleOnTheTrip': {'$in': [username]}}))
+
+    for trip2 in secondhand_trips:
+        tripscontext.append(trip2)
 
     context = {
         'trips' : tripscontext,
@@ -225,8 +234,14 @@ def add_trip(request: HttpRequest):
     return JsonResponse(response)
 
 def index(request: HttpRequest):
+    messages_list = []
+    messages_cursor = messages.find({})
+    for message in messages_cursor:
+        message.pop("_id")
+        messages_list.append(message)
     context = {
-        'logged_out' : True
+        'logged_out' : True,
+        'messages': messages_list
     }
     if ('token' in request.COOKIES) :
         token = request.COOKIES['token'].encode()
@@ -339,6 +354,42 @@ def findUser(token) :
         return account
     return None
 
+
+
+
+def add_friend(request: HttpRequest, trip_id):
+    decoded_body = json.loads(request.body.decode())
+    friend_name = html.escape(decoded_body["friendName"])
+    response = HttpResponseRedirect('/trips/')
+
+    trip = trips.find_one({"tripID": trip_id})
+    print("THIS IS THE TRIP:",flush=True)
+    print(trip,flush=True)
+    
+    if trip == None:
+        return response
+    
+    # is friend registered/
+    registration=list(accounts.find({'username':friend_name}))
+    if len(registration)==0:
+        return response
+    
+    tripCopy = trip.copy()
+    peopleOnTheTrip = trip.get("peopleOnTheTrip", [])
+    peopleOnTheTripCopy = peopleOnTheTrip.copy()
+   
+    if friend_name not in peopleOnTheTripCopy:
+        peopleOnTheTripCopy.append(friend_name)
+        tripCopy["peopleOnTheTrip"] = peopleOnTheTripCopy
+        trips.replace_one(trip, tripCopy)
+
+    print("THIS IS THE NEW TRIP:",flush=True)
+    print(tripCopy, flush=True)
+    
+    return response
+
+
+
 def uploadImage(request: HttpRequest, trip_id) :
     print("***trip_id***")
     print(trip_id, flush=True)
@@ -347,6 +398,7 @@ def uploadImage(request: HttpRequest, trip_id) :
     #   Take the image as a request, Create a new file 
     #   and save it to whatever folder you may create
     #   that persists data :)
+
     cur_path = os.path.realpath(__file__)
     #   This breaks the image upload at the moment, not sure why.
     # dir = os.path.dirname(cur_path)
@@ -413,7 +465,7 @@ def load_trip_by_id(request,trip_id):
     if currTrips == None:
         return HttpResponseNotFound
     else :
-        newContext = {'creator' : currTrips['username'], 'tripID': currTrips['tripID'], 'destination' : currTrips['destination']}
+        newContext = {'creator' : currTrips['username'], 'tripID': currTrips['tripID'], 'destination' : currTrips['destination'], 'name' : currTrips['tripname']}
         #response = HttpResponseRedirect('newTrip.html')
         #response.context = newContext
         

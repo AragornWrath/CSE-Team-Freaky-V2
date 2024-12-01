@@ -34,7 +34,21 @@
                     <!-- <input type="date"> -->
                 </div>
                 {% load trip_tags %}
+                <div id="tripIDMAAM" hidden>{% tripID trip %}</div>
                 <b class="trip-destination">{% tripDestination trip %}</b>
+                <b  class = "trip-destination"> Add Friends to Your Trip!</b>
+                <input id="add-friends-text-box" class="addTripTextBox" type="text">
+                <!-- <b>Date:</b> -->
+                <!-- <input class="addTripTextBox" type="date"> -->
+                <button id="add-friend-button" value="Add a Friend" class="add-trip-label" placeholder= "Enter a name..." onclick="addFriend(document.getElementById('tripIDMAAM').textContent)">Add a Friend</button>
+                
+                <ul id="friends-list">
+                    {% getPeopleOnTheTrip trip as peopleOnTheTrip %}
+                    {% for person in peopleOnTheTrip %}
+                     <li>{{ person }}</li>
+                     {% endfor %}
+                </ul>
+
                 <form action="/media-uploads/{% tripID trip %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <label class="add-trip-label">Add Your Trip Photos!:</label>

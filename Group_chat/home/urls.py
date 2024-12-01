@@ -17,6 +17,7 @@ urlpatterns = [
     path('all_trips/delete-like', views.delete_like, name="deleteLike"),
     path('all_trips/view-likes', views.view_likes, name="viewLikes"),
     path('media-uploads/<str:trip_id>', views.uploadImage, name='updateGallery'),
+    path('trips/add-friend/<str:trip_id>', views.add_friend, name='updateGallery'),
     path('trips/<str:trip_id>',views.load_trip_by_id,name='tripByID'),
     # path('root/home/userImages/<str:trip_id>', views.serveMedia, name='')
 ]
