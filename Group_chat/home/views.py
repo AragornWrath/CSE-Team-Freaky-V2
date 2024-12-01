@@ -402,7 +402,9 @@ def add_task(request: HttpRequest, trip_id):
         return response
     if len(task_name)==0:
         return response
-    task_name= task_name +"=>"+ trip['username']
+
+    # add the appriopraiate username
+    task_name= task_name +"=>"+ request.COOKIES.get('username', None)
     
     tripCopy = trip.copy()
     tasksOfTheTrip = trip.get("tasks", [])

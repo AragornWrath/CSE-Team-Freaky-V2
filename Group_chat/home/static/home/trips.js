@@ -50,9 +50,9 @@ function addTrip(){
 
 
 //ADDING FRIENDS TO TRIP
-function addFriend(tripID){
+function addFriend(i, tripID){
     console.log("ADD FRIEND IS CALLED ON JAVASCRIPT")
-    const friendNameTextBox = document.getElementById("add-friends-text-box");
+    const friendNameTextBox = document.getElementById("add-friends-text-box"+i);
     const friendName = friendNameTextBox.value;
     friendNameTextBox.value = "";
     console.log("FRIEND'S NAME ON JS:")
@@ -65,7 +65,7 @@ function addFriend(tripID){
     request.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
             //implement this part
-            addFriendToHTML(friendName);
+            //addFriendToHTML(friendName);
         }
     }
     const friendJSON = {"friendName": friendName};
@@ -77,9 +77,9 @@ function addFriend(tripID){
 }
 
 
-function addTask(tripID){
+function addTask(i, tripID){
     console.log("ADD TASK IS CALLED ON JAVASCRIPT")
-    const taskNameTextBox = document.getElementById("add-task-text-box");
+    const taskNameTextBox = document.getElementById("add-task-text-box"+i);
     const taskName = taskNameTextBox.value;
     taskNameTextBox.value = "";
 
